@@ -49,6 +49,11 @@ final class RewardService
             return false;
         }
 
+        // Cheap idempotency check before obtaining row locks on every message.
+        if (DB::table('referral_rewards')->where('referred_user_id', $user->id)->exists()) {
+            return false;
+        }
+
         return DB::transaction(function () use ($user): bool {
             $joined = User::query()->lockForUpdate()->find($user->id);
             if (! $joined || ! $joined->in_channel || ! $joined->channel_checked_at
