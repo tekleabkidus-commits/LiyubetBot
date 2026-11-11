@@ -27,9 +27,9 @@
         <env name="DB_CONNECTION" value="pgsql"/>
         <env name="DB_HOST" value="127.0.0.1"/>
         <env name="DB_PORT" value="5445"/>
-        <env name="DB_DATABASE" value="kemerbot_test"/>
-        <env name="DB_USERNAME" value="kemerbot"/>
-        <env name="DB_PASSWORD" value="kemerbot"/>
+        <env name="DB_DATABASE" value="liyubetbot_test"/>
+        <env name="DB_USERNAME" value="liyubetbot"/>
+        <env name="DB_PASSWORD" value="liyubetbot"/>
         <env name="DB_URL" value=""/>
         <env name="MAIL_MAILER" value="array"/>
         <env name="QUEUE_CONNECTION" value="sync"/>
@@ -39,7 +39,7 @@
         <env name="REDIS_PORT" value="6381"/>
         <env name="REDIS_DB" value="15"/>
         <env name="TELEGRAM_BOT_TOKEN" value="0000000000:TEST-TOKEN-NEVER-REAL"/>
-        <env name="TELEGRAM_BOT_USERNAME" value="KemerBetTestBot"/>
+        <env name="TELEGRAM_BOT_USERNAME" value="LiyubetTestBot"/>
         <env name="TELEGRAM_WEBHOOK_SECRET" value="test-webhook-secret"/>
         <env name="PULSE_ENABLED" value="false"/>
         <env name="TELESCOPE_ENABLED" value="false"/>

@@ -1,1 +1,1 @@
-CREATE DATABASE kemerbot_test OWNER kemerbot;
+CREATE DATABASE liyubetbot_test OWNER liyubetbot;
