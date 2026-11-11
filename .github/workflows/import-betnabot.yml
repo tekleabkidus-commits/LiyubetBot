@@ -1,0 +1,28 @@
+name: Import BetnaBot source
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/import-betnabot.yml'
+permissions:
+  contents: write
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out LiyubetBot
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Copy BetnaBot source
+        run: |
+          set -euo pipefail
+          git clone --depth=1 https://github.com/tekleabkidus-commits/betnabot.git /tmp/betnabot-source
+          rsync -a --exclude='.git' --exclude='.github/workflows' /tmp/betnabot-source/ ./
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if ! git diff --cached --quiet; then
+            git commit -m "Copy BetnaBot source into LiyubetBot"
+            git push origin HEAD:main
+          fi
