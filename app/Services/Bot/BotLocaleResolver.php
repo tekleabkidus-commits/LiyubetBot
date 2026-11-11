@@ -9,7 +9,7 @@ use App\Models\User;
 use Illuminate\Support\Collection;
 
 /**
- * BetnaBot is English-only. Legacy translations remain in the database so
+ * LiyubetBot is English-only. Legacy translations remain in the database so
  * upgrades do not destroy existing content; all runtime output uses English.
  */
 final class BotLocaleResolver

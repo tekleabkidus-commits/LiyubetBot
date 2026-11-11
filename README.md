@@ -1,7 +1,7 @@
 # LiyubetBot — Liyubet Telegram Bot Management System
 
 A standalone Laravel 12 application containing the official **Liyubet** Telegram bot
-(webhook mode, EN/AM bilingual), a **Filament v4 admin panel** for the marketing team,
+(webhook mode, English-only), a **Filament v4 admin panel** for the marketing team,
 and a **durable queue-based sending engine**. Capacity must be measured against your deployment.
 
 Current release: [Workspace upgrade](docs/WORKSPACE-UPGRADE.md) · [Installation and upgrade guide](docs/UPGRADE-GUIDE.md) · [Verification and previews](docs/VERIFICATION.md).

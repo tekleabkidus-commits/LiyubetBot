@@ -7,10 +7,10 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 /**
- * One-way Betna rebrand for existing BetnaBot databases.
+ * One-way Liyubet rebrand for existing LiyubetBot databases.
  *
  * Updates visible text and neutralizes ONLY links to the old operator's
- * website. Does not invent a Betna website URL or overwrite custom links.
+ * website. Does not invent a Liyubet website URL or overwrite custom links.
  * Other business integrations and historic records are left intact.
  */
 return new class extends Migration
@@ -21,9 +21,9 @@ return new class extends Migration
             return null;
         }
 
-        $text = preg_replace('~https?://(?:www\.)?kemerbet\.co[^\s<>"\x27]*~i', 'Betna website (URL not configured)', $text);
-        $text = preg_replace('~\bkemer[\s-]*bet\b~iu', 'Betna', $text);
-        $text = preg_replace('~kemerbet\.co~i', 'Betna website (URL not configured)', $text);
+        $text = preg_replace('~https?://(?:www\.)?kemerbet\.co[^\s<>"\x27]*~i', 'Liyubet website (URL not configured)', $text);
+        $text = preg_replace('~\bkemer[\s-]*bet\b~iu', 'Liyubet', $text);
+        $text = preg_replace('~kemerbet\.co~i', 'Liyubet website (URL not configured)', $text);
 
         return $text;
     }
@@ -116,7 +116,7 @@ return new class extends Migration
         }
 
         // Remove legacy external URL buttons from keyword replies and journeys.
-        // Their owners can add verified Betna URLs through the admin UI.
+        // Their owners can add verified Liyubet URLs through the admin UI.
         foreach (['keyword_replies', 'automation_steps'] as $table) {
             if (! Schema::hasTable($table) || ! Schema::hasColumn($table, 'buttons')) {
                 continue;

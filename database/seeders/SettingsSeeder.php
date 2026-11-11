@@ -23,7 +23,7 @@ class SettingsSeeder extends Seeder
             'broadcast.test_recipient_chat_ids' => [],
             'webapp.url' => null,
             'welcome.message' => [
-                'en' => "Welcome to Betna, {first_name}! ⚽\nUse the menu below to explore matches, promos and more.",
+                'en' => "Welcome to Liyubet, {first_name}! ⚽\nUse the menu below to explore matches, promos and more.",
             ],
             'welcome.media_file_id' => null,
             'features' => [

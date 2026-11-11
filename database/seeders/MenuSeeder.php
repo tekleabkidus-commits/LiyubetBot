@@ -8,8 +8,8 @@ use App\Models\MenuItem;
 use Illuminate\Database\Seeder;
 
 /**
- * Safe Betna starter menu. Never seeds another company's external URLs.
- * Staff can add verified Betna website buttons in the admin panel.
+ * Safe Liyubet starter menu. Never seeds another company's external URLs.
+ * Staff can add verified Liyubet website buttons in the admin panel.
  */
 class MenuSeeder extends Seeder
 {
@@ -22,8 +22,8 @@ class MenuSeeder extends Seeder
         $about = MenuItem::query()->create(['action_type' => 'reply', 'position' => 0]);
         $about->translations()->create([
             'lang' => 'en',
-            'label' => 'ℹ️ About Betna',
-            'reply_text' => "Welcome to Betna! Use this bot for information, updates and support.",
+            'label' => 'ℹ️ About Liyubet',
+            'reply_text' => "Welcome to Liyubet! Use this bot for information, updates and support.",
         ]);
 
         $invite = MenuItem::query()->create(['action_type' => 'invite', 'position' => 1]);

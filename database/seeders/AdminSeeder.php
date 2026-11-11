@@ -16,9 +16,9 @@ class AdminSeeder extends Seeder
             throw new \RuntimeException('Shared environments require an explicit email and password of at least 16 characters');
         }
         Admin::query()->firstOrCreate(
-            ['email' => env('SEED_ADMIN_EMAIL') ?: 'owner@betna.local'],
+            ['email' => env('SEED_ADMIN_EMAIL') ?: 'owner@liyubet.local'],
             [
-                'name' => 'Betna Owner',
+                'name' => 'Liyubet Owner',
                 // Override via SEED_ADMIN_PASSWORD before seeding any shared environment.
                 'password' => env('SEED_ADMIN_PASSWORD') ?: 'password',
                 'role' => AdminRole::Owner,
