@@ -27,9 +27,13 @@ final class TelegramMembershipService
     {
         $channelId = $this->settings->get('channel.id');
 
-        // No channel configured → no join gate.
-        if ($channelId === null || $channelId === '') {
+        // Mandatory onboarding: missing configuration must not silently grant access.
+        // Owner may temporarily disable the gate in Rewards Settings.
+        if (! (bool) $this->settings->get('rewards.require_channel', true)) {
             return true;
+        }
+        if ($channelId === null || $channelId === '') {
+            return false;
         }
 
         $ttlMinutes = (int) config('telegram.membership_ttl_minutes');

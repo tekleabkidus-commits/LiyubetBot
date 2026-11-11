@@ -23,9 +23,21 @@ final class MenuRenderer
     /** Keyboard for the main (root) menu, or null when no active items exist. */
     public function rootKeyboard(BotLanguage $lang): ?array
     {
-        $items = $this->activeChildren(null);
-
-        return $items->isEmpty() ? null : $this->keyboard($items, $lang, backTo: null);
+        $settings = app(SettingsService::class);
+        $first = [];
+        $second = [];
+        foreach (['sport' => '⚽ Sport', 'casino' => '🎰 Casino'] as $name => $label) {
+            if ((bool) $settings->get("rewards.menu_{$name}_enabled", true)) {
+                $first[] = ['text' => (string) $settings->get("rewards.menu_{$name}_label", $label), 'callback_data' => 'rewards:'.$name];
+            }
+        }
+        if ((bool) $settings->get('rewards.menu_referral_enabled', true) && (bool) ($settings->get('features', [])['referrals'] ?? true)) {
+            $second[] = ['text' => (string) $settings->get('rewards.menu_referral_label', '🎁 Referral'), 'callback_data' => 'rewards:referral'];
+        }
+        if ((bool) $settings->get('rewards.menu_support_enabled', true)) {
+            $second[] = ['text' => (string) $settings->get('rewards.menu_support_label', '💬 Support'), 'callback_data' => 'rewards:support'];
+        }
+        return ['inline_keyboard' => array_values(array_filter([$first, $second]))];
     }
 
     /** Keyboard for a submenu's children, with a Back button appended. */

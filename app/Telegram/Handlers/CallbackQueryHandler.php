@@ -16,6 +16,7 @@ use App\Services\Bot\MenuRenderer;
 use App\Services\Bot\UserService;
 use App\Services\Bot\WelcomeService;
 use App\Services\SettingsService;
+use App\Services\Rewards\RewardService;
 use App\Services\Telegram\TelegramClient;
 use App\Services\Telegram\TelegramMembershipService;
 use App\Telegram\CallbackAction;
@@ -39,6 +40,8 @@ final class CallbackQueryHandler
         private readonly BotLocaleResolver $locale,
         private readonly BotMessageSender $sender,
         private readonly SettingsService $settings,
+        private readonly RewardsBotHandler $rewardBot,
+        private readonly RewardService $rewards,
     ) {}
 
     public function handle(array $callbackQuery): void
@@ -53,7 +56,12 @@ final class CallbackQueryHandler
         [$user] = $this->users->upsertFromTelegram($from);
         $this->users->recordActivity($user);
 
-        $action = CallbackData::parse($callbackQuery['data'] ?? null);
+        $data = $callbackQuery['data'] ?? null;
+        if (is_string($data) && str_starts_with($data, 'rewards:')) {
+            $this->rewardBot->handle($user, $callbackId, $data);
+            return;
+        }
+        $action = CallbackData::parse($data);
 
         if ($action === null) {
             // Unknown/hostile payload: release the spinner, log, do nothing else.
@@ -150,6 +158,7 @@ final class CallbackQueryHandler
 
         if ($this->membership->isMember($user, forceRefresh: true)) {
             $this->client->answerCallbackQuery($callbackId, $this->locale->uiText('joined_ok', $lang));
+            $this->rewards->qualify($user);
             $this->welcome->sendWelcome($user);
 
             return;
@@ -194,13 +203,6 @@ final class CallbackQueryHandler
             return;
         }
 
-        $botUsername = (string) config('telegram.bot_username');
-        $link = 'https://t.me/'.$botUsername.'?start=ref_'.$user->id;
-
-        $this->client->answerCallbackQuery($callbackId);
-        $this->sender->sendToUser(
-            $user,
-            str_replace(':link', $link, $this->locale->uiText('invite_text', $lang)),
-        );
+        $this->rewardBot->handle($user, $callbackId, 'rewards:referral');
     }
 }

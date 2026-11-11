@@ -14,6 +14,7 @@ use App\Services\Bot\KeywordMatcher;
 use App\Services\Bot\PreferencesHandler;
 use App\Services\Bot\UserService;
 use App\Services\Bot\WelcomeService;
+use App\Services\Rewards\RewardService;
 use App\Services\Telegram\TelegramMembershipService;
 
 /**
@@ -31,6 +32,7 @@ final class IncomingMessageHandler
         private readonly BotLocaleResolver $locale,
         private readonly BotMessageSender $sender,
         private readonly EmbeddedButtonsRenderer $embeddedButtons,
+        private readonly RewardService $rewards,
     ) {}
 
     public function handle(array $message): void
@@ -45,12 +47,19 @@ final class IncomingMessageHandler
         $this->users->recordActivity($user);
         $this->inbound->record($user, $message);
 
-        if (app(PreferencesHandler::class)->handle($user, (string) ($message['text'] ?? ''))) {
-            return;
-        }
         if (! $this->membership->isMember($user)) {
             $this->welcome->sendJoinGate($user);
 
+            return;
+        }
+
+        $this->rewards->qualify($user);
+        if (app(PreferencesHandler::class)->handle($user, (string) ($message['text'] ?? ''))) {
+            return;
+        }
+        $textValue = trim((string) ($message['text'] ?? ''));
+        if (in_array($textValue, ['/menu', '/menu@'.config('telegram.bot_username')], true)) {
+            $this->welcome->sendWelcome($user);
             return;
         }
 

@@ -8,6 +8,7 @@ use App\Events\UserJoined;
 use App\Services\Bot\InboundMessageRecorder;
 use App\Services\Bot\UserService;
 use App\Services\Bot\WelcomeService;
+use App\Services\Rewards\RewardService;
 use App\Services\Telegram\TelegramMembershipService;
 use App\Telegram\StartPayloadParser;
 
@@ -25,6 +26,7 @@ final class StartCommandHandler
         private readonly InboundMessageRecorder $inbound,
         private readonly TelegramMembershipService $membership,
         private readonly WelcomeService $welcome,
+        private readonly RewardService $rewards,
     ) {}
 
     public function handle(array $message): void
@@ -38,7 +40,7 @@ final class StartCommandHandler
         [$user, $wasCreated] = $this->users->upsertFromTelegram($from);
 
         $payload = $this->parser->parse($this->payloadFrom((string) ($message['text'] ?? '')));
-        $this->users->applyAttribution($user, $payload);
+        $this->users->applyAttribution($user, $payload, $wasCreated);
         $this->users->recordActivity($user);
         $this->inbound->record($user, $message);
 
@@ -52,6 +54,7 @@ final class StartCommandHandler
             return;
         }
 
+        $this->rewards->qualify($user);
         $this->welcome->sendWelcome($user);
     }
 
