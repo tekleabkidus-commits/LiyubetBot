@@ -1,4 +1,4 @@
-name: Import BetnaBot source
+name: Import and rebrand BetnaBot as LiyubetBot
 on:
   workflow_dispatch:
   push:
@@ -10,19 +10,42 @@ jobs:
   import:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out LiyubetBot
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           persist-credentials: true
-      - name: Copy BetnaBot source
+      - name: Import source and rebrand
+        shell: bash
         run: |
           set -euo pipefail
           git clone --depth=1 https://github.com/tekleabkidus-commits/betnabot.git /tmp/betnabot-source
           rsync -a --exclude='.git' --exclude='.github/workflows' /tmp/betnabot-source/ ./
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          roots = ['app', 'bootstrap', 'config', 'database', 'docs', 'lang', 'resources', 'routes', 'tests']
+          root_files = ['README.md', 'CLAUDE.md', '.env.example', 'composer.json', 'package.json', 'phpunit.xml']
+          extensions = {'.php', '.md', '.json', '.xml', '.example', '.txt', '.blade.php'}
+          paths = [Path(p) for p in root_files if Path(p).is_file()]
+          for root in roots:
+              if Path(root).exists():
+                  paths.extend(p for p in Path(root).rglob('*') if p.is_file())
+          for path in paths:
+              if path.suffix not in extensions and path.name not in root_files:
+                  continue
+              try:
+                  data = path.read_text(encoding='utf-8')
+              except UnicodeDecodeError:
+                  continue
+              changed = data
+              for before, after in [('Banabet', 'Liyubet'), ('BanaBet', 'Liyubet'), ('banabet', 'liyubet'), ('BANABET', 'LIYUBET'), ('BetnaBot', 'LiyubetBot'), ('BETNABOT', 'LIYUBETBOT'), ('betnabot', 'liyubetbot'), ('Betna', 'Liyubet'), ('BETNA', 'LIYUBET'), ('betna', 'liyubet')]:
+                  changed = changed.replace(before, after)
+              if changed != data:
+                  path.write_text(changed, encoding='utf-8')
+          PY
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
           if ! git diff --cached --quiet; then
-            git commit -m "Copy BetnaBot source into LiyubetBot"
+            git commit -m "Import and rebrand source as LiyubetBot"
             git push origin HEAD:main
           fi
