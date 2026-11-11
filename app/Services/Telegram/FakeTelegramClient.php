@@ -181,6 +181,18 @@ final class FakeTelegramClient implements TelegramClient
         return TelegramResponse::success(['url' => 'https://fake.test/telegram/webhook']);
     }
 
+    public function setMyCommands(array $commands): TelegramResponse
+    {
+        $this->calls[] = ['method' => 'setMyCommands', 'chat_id' => null, 'params' => ['commands' => $commands]];
+        return TelegramResponse::success();
+    }
+
+    public function setChatMenuButton(array $menuButton): TelegramResponse
+    {
+        $this->calls[] = ['method' => 'setChatMenuButton', 'chat_id' => null, 'params' => ['menu_button' => $menuButton]];
+        return TelegramResponse::success();
+    }
+
     private function recordSend(string $method, int $chatId, array $params, ?string $mediaField = null, bool $poll = false): TelegramResponse
     {
         $this->calls[] = ['method' => $method, 'chat_id' => $chatId, 'params' => $params];

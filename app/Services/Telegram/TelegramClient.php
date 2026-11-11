@@ -35,4 +35,10 @@ interface TelegramClient
     public function setWebhook(string $url, string $secret, array $allowedUpdates): TelegramResponse;
 
     public function getWebhookInfo(): TelegramResponse;
+
+    /** @param list<array{command: string, description: string}> $commands */
+    public function setMyCommands(array $commands): TelegramResponse;
+
+    /** Set the native Menu button next to Telegram's text input. */
+    public function setChatMenuButton(array $menuButton): TelegramResponse;
 }

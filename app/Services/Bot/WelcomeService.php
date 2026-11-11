@@ -44,7 +44,7 @@ final class WelcomeService
         $mediaId = $this->settings->get('welcome.media_file_id');
         $media = $mediaId !== null ? MediaFile::query()->find($mediaId) : null;
 
-        return $this->sender->sendToUser($user, $text, $media, $this->menus->rootKeyboard($lang));
+        return $this->sender->sendToUser($user, $text, $media, $this->menus->replyKeyboard($lang));
     }
 
     public function sendJoinGate(User $user): TelegramResponse

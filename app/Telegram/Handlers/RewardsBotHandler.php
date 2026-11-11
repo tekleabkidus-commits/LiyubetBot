@@ -42,7 +42,25 @@ final class RewardsBotHandler
         $this->rewards->qualify($user);
         $this->client->answerCallbackQuery($callbackId);
 
-        $action = substr($data, strlen('rewards:'));
+        $this->showAction($user, substr($data, strlen('rewards:')), $callbackId);
+    }
+
+    /** Reply-keyboard and command menu actions do not have callback IDs. */
+    public function handleText(User $user, string $action): void
+    {
+        if (! in_array($action, ['home','sport','casino','support','referral','balance','history','withdraw'], true)) {
+            return;
+        }
+        if (! $this->membership->isMember($user)) {
+            $this->welcome->sendJoinGate($user);
+            return;
+        }
+        $this->rewards->qualify($user);
+        $this->showAction($user, $action, null);
+    }
+
+    private function showAction(User $user, string $action, ?string $callbackId): void
+    {
         if ($action === 'home') {
             $this->sender->sendToUser($user, 'Welcome to Liyubet. Choose a service:', replyMarkup: $this->menus->rootKeyboard(\App\Enums\BotLanguage::En));
         } elseif (in_array($action, ['sport', 'casino', 'support'], true)) {
@@ -57,7 +75,7 @@ final class RewardsBotHandler
             $this->history($user);
         } elseif ($action === 'withdraw') {
             $this->withdrawalOptions($user);
-        } elseif (str_starts_with($action, 'redeem:')) {
+        } elseif (str_starts_with($action, 'redeem:') && $callbackId !== null) {
             $this->redeem($user, (int) substr($action, 7), $callbackId);
         }
     }

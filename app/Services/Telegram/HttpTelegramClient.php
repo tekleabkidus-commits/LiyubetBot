@@ -105,6 +105,16 @@ final class HttpTelegramClient implements TelegramClient
         return $this->call('getWebhookInfo');
     }
 
+    public function setMyCommands(array $commands): TelegramResponse
+    {
+        return $this->call('setMyCommands', ['commands' => $commands, 'scope' => ['type' => 'default']]);
+    }
+
+    public function setChatMenuButton(array $menuButton): TelegramResponse
+    {
+        return $this->call('setChatMenuButton', ['menu_button' => $menuButton]);
+    }
+
     private function sendMedia(string $method, string $field, int $chatId, string $media, ?string $caption, ?array $replyMarkup, ?string $parseMode): TelegramResponse
     {
         $params = array_filter([

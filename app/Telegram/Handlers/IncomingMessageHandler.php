@@ -11,6 +11,7 @@ use App\Services\Bot\BotMessageSender;
 use App\Services\Bot\EmbeddedButtonsRenderer;
 use App\Services\Bot\InboundMessageRecorder;
 use App\Services\Bot\KeywordMatcher;
+use App\Services\Bot\MenuRenderer;
 use App\Services\Bot\PreferencesHandler;
 use App\Services\Bot\UserService;
 use App\Services\Bot\WelcomeService;
@@ -33,6 +34,8 @@ final class IncomingMessageHandler
         private readonly BotMessageSender $sender,
         private readonly EmbeddedButtonsRenderer $embeddedButtons,
         private readonly RewardService $rewards,
+        private readonly MenuRenderer $menus,
+        private readonly RewardsBotHandler $rewardsBot,
     ) {}
 
     public function handle(array $message): void
@@ -58,8 +61,12 @@ final class IncomingMessageHandler
             return;
         }
         $textValue = trim((string) ($message['text'] ?? ''));
-        if (in_array($textValue, ['/menu', '/menu@'.config('telegram.bot_username')], true)) {
-            $this->welcome->sendWelcome($user);
+        if (($action = $this->menus->actionFromText($textValue)) !== null) {
+            if ($action === 'home') {
+                $this->welcome->sendWelcome($user);
+            } else {
+                $this->rewardsBot->handleText($user, $action);
+            }
             return;
         }
 
