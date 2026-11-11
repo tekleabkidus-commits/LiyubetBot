@@ -7,7 +7,7 @@
     @include('filament.partials.rewards-nav', ['active' => 'settings'])
 
     <section class="ly-grid ly-grid-3">
-        <article class="ly-stat ly-green"><small>Referral bonus</small><span class="ly-symbol">◇</span><strong>{{ number_format((int) \App\Models\Setting::query()->where('key', 'rewards.amount_etb')->first()?->value ?: 2) }} ETB</strong><em>Per eligible verified new member</em></article>
+        <article class="ly-stat ly-green"><small>Referral bonus</small><span class="ly-symbol">◇</span><strong>{{ number_format($rewardRate) }} ETB</strong><em>Per eligible verified new member</em></article>
         <article class="ly-stat"><small>Bot language</small><span class="ly-symbol">◎</span><strong>English</strong><em>Customer-facing bot messages</em></article>
         <article class="ly-stat ly-blue"><small>Reward denominations</small><span class="ly-symbol">▣</span><strong>50 / 100 / 500</strong><em>Switch each redemption option below</em></article>
     </section>

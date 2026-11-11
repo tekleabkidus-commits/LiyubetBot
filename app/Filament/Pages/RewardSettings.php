@@ -21,6 +21,11 @@ class RewardSettings extends Page
 
     public ?array $data = [];
 
+    protected function getViewData(): array
+    {
+        return ['rewardRate' => (int) app(SettingsService::class)->get('rewards.amount_etb', 2)];
+    }
+
     public static function canAccess(): bool
     {
         return auth()->user()?->isOwner() === true;

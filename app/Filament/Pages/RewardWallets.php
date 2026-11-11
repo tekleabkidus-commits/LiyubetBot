@@ -9,9 +9,11 @@ use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Livewire\WithPagination;
 
 class RewardWallets extends Page
 {
+    use WithPagination;
     protected string $view = 'filament.pages.reward-wallets';
     protected static ?string $navigationLabel = 'Player Wallets';
     protected static string|\UnitEnum|null $navigationGroup = 'Rewards';
@@ -32,6 +34,14 @@ class RewardWallets extends Page
     {
         abort_unless(static::canAccess(), 403);
         $this->query = mb_substr(trim($this->query), 0, 80);
+        $this->resetPage();
+    }
+
+    public function clearSelection(): void
+    {
+        $this->selectedUser = null;
+        $this->adjustmentEtb = 0;
+        $this->adjustmentReason = '';
     }
 
     public function selectUser(int $userId): void
@@ -88,8 +98,15 @@ class RewardWallets extends Page
                 });
             })
             ->select('w.user_id','w.balance_cents','w.earned_cents','w.redeemed_cents','w.suspended_at','u.tg_chat_id','u.first_name','u.username')
-            ->orderByDesc('w.id')->limit(100)->get();
+            ->orderByDesc('w.id')->paginate(25);
         $ledger = $this->selectedUser ? DB::table('reward_ledger')->where('user_id', $this->selectedUser)->orderByDesc('id')->limit(25)->get() : collect();
-        return compact('wallets', 'ledger');
+        return [
+            'wallets' => $wallets,
+            'ledger' => $ledger,
+            'walletCount' => DB::table('referral_wallets')->count(),
+            'walletAvailable' => (int) DB::table('referral_wallets')->sum('balance_cents'),
+            'walletEarned' => (int) DB::table('referral_wallets')->sum('earned_cents'),
+            'walletSuspended' => DB::table('referral_wallets')->whereNotNull('suspended_at')->count(),
+        ];
     }
 }
