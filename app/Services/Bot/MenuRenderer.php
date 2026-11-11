@@ -31,13 +31,21 @@ final class MenuRenderer
                 $first[] = ['text' => (string) $settings->get("rewards.menu_{$name}_label", $label), 'callback_data' => 'rewards:'.$name];
             }
         }
-        if ((bool) $settings->get('rewards.menu_referral_enabled', true) && (bool) ($settings->get('features', [])['referrals'] ?? true)) {
+        if ((bool) $settings->get('rewards.menu_referral_enabled', true) && (bool) $settings->get('rewards.enabled', true) && (bool) ($settings->get('features', [])['referrals'] ?? true)) {
             $second[] = ['text' => (string) $settings->get('rewards.menu_referral_label', '🎁 Referral'), 'callback_data' => 'rewards:referral'];
         }
         if ((bool) $settings->get('rewards.menu_support_enabled', true)) {
             $second[] = ['text' => (string) $settings->get('rewards.menu_support_label', '💬 Support'), 'callback_data' => 'rewards:support'];
         }
-        return ['inline_keyboard' => array_values(array_filter([$first, $second]))];
+        $rows = array_values(array_filter([$first, $second]));
+        // Preserve access to the legacy Bot Content menu when explicitly enabled.
+        if ((bool) $settings->get('rewards.extra_menu_enabled', false)) {
+            $extra = $this->activeChildren(null);
+            if ($extra->isNotEmpty()) {
+                $rows = array_merge($rows, $this->keyboard($extra, $lang, backTo: null)['inline_keyboard']);
+            }
+        }
+        return ['inline_keyboard' => $rows];
     }
 
     /** Keyboard for a submenu's children, with a Back button appended. */

@@ -35,6 +35,7 @@ class SettingsSeeder extends Seeder
             'rewards.menu_casino_enabled' => true,
             'rewards.menu_referral_enabled' => true,
             'rewards.menu_support_enabled' => true,
+            'rewards.extra_menu_enabled' => false,
             'rewards.menu_sport_label' => '⚽ Sport',
             'rewards.menu_casino_label' => '🎰 Casino',
             'rewards.menu_referral_label' => '🎁 Referral',

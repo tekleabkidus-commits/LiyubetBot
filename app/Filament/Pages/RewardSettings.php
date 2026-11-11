@@ -48,6 +48,7 @@ class RewardSettings extends Page
         $values['require_channel'] ??= true;
         $values['reward_etb'] ??= 2;
         $values['brand'] ??= 'Kemerbet';
+        $values['extra_menu_enabled'] = (bool) $settings->get('rewards.extra_menu_enabled', false);
         foreach (['sport', 'casino', 'referral', 'support'] as $name) {
             $values[$name.'_enabled'] = (bool) $settings->get("rewards.menu_{$name}_enabled", true);
             $values[$name.'_label'] = (string) $settings->get("rewards.menu_{$name}_label", ucfirst($name));
@@ -79,6 +80,7 @@ class RewardSettings extends Page
                 Toggle::make('referral_enabled')->label('Show Referral button'),
                 TextInput::make('referral_label')->label('Referral button label')->maxLength(40)->required(),
                 Toggle::make('support_enabled')->label('Show Support button'),
+                Toggle::make('extra_menu_enabled')->label('Show legacy custom menu buttons after the two main rows'),
                 TextInput::make('support_label')->label('Support button label')->maxLength(40)->required(),
             ]),
             Section::make('Approved external links')->description('Must be HTTPS. Leave empty to display a safe unavailable/support message.')->schema([
@@ -102,6 +104,7 @@ class RewardSettings extends Page
             $settings->set($key, (bool) ($data[$input] ?? false));
         }
         $settings->set('rewards.amount_etb', (int) ($data['reward_etb'] ?? 2));
+        $settings->set('rewards.extra_menu_enabled', (bool) ($data['extra_menu_enabled'] ?? false));
         $settings->set('rewards.redemption_brand', trim((string) ($data['brand'] ?? 'Kemerbet')));
         foreach (['sport', 'casino', 'referral', 'support'] as $name) {
             $settings->set("rewards.menu_{$name}_enabled", (bool) ($data[$name.'_enabled'] ?? false));
