@@ -42,6 +42,7 @@ class AdminPanelProvider extends PanelProvider
                 'Overview',
                 'Campaigns',
                 'Audience',
+                'Rewards',
                 'Bot Content',
                 'Settings',
             ])

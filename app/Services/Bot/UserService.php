@@ -58,7 +58,7 @@ final class UserService
      * set only when empty; a later /start never rewrites either. Self-referral
      * and unknown referrer ids are silently ignored.
      */
-    public function applyAttribution(User $user, StartPayload $payload, bool $wasCreated = false): void
+    public function applyAttribution(User $user, StartPayload $payload, bool $wasCreated = true): void
     {
         if ($payload->type === StartPayloadType::Source && $user->source === null) {
             DB::transaction(function () use ($user, $payload) {

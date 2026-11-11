@@ -33,7 +33,8 @@ final class RewardsBotHandler
             $this->client->answerCallbackQuery($callbackId);
             return;
         }
-        if (! $this->membership->isMember($user)) {
+        $requiresFreshCheck = str_starts_with($data, 'rewards:redeem:');
+        if (! $this->membership->isMember($user, forceRefresh: $requiresFreshCheck, allowStaleOnError: ! $requiresFreshCheck)) {
             $this->client->answerCallbackQuery($callbackId, 'Join the channel first.', true);
             $this->welcome->sendJoinGate($user);
             return;

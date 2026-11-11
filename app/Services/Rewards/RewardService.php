@@ -201,6 +201,26 @@ final class RewardService
         }, 3);
     }
 
+    /** Manual adjustments require an authenticated Owner and an audit reason. */
+    public function adjust(User $user, int $changeEtb, string $reason): void
+    {
+        if ($changeEtb === 0 || abs($changeEtb) > 10000 || mb_strlen(trim($reason)) < 8) {
+            throw new \InvalidArgumentException('Enter a valid adjustment and a reason of at least 8 characters.');
+        }
+        DB::transaction(function () use ($user, $changeEtb) {
+            $wallet = $this->lockedWallet($user->id);
+            $difference = $changeEtb * 100;
+            $balance = (int) $wallet->balance_cents + $difference;
+            if ($balance < 0) {
+                throw new \InvalidArgumentException('Insufficient wallet balance for this deduction.');
+            }
+            DB::table('referral_wallets')->where('id', $wallet->id)->update([
+                'balance_cents' => $balance, 'updated_at' => now(),
+            ]);
+            $this->ledger($user->id, 'manual_adjustment', $difference, $balance);
+        }, 3);
+    }
+
     public function suspend(int $userId, ?string $reason = null, bool $active = true): void
     {
         DB::transaction(function () use ($userId, $reason, $active) {

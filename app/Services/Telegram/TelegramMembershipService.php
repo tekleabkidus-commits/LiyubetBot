@@ -23,7 +23,7 @@ final class TelegramMembershipService
         private readonly SettingsService $settings,
     ) {}
 
-    public function isMember(User $user, bool $forceRefresh = false): bool
+    public function isMember(User $user, bool $forceRefresh = false, bool $allowStaleOnError = true): bool
     {
         $channelId = $this->settings->get('channel.id');
 
@@ -55,7 +55,7 @@ final class TelegramMembershipService
 
             // Fail closed for new/unverified users. A previously verified
             // member can keep using the bot during a temporary API outage.
-            return $user->channel_checked_at !== null && $user->in_channel;
+            return $allowStaleOnError && $user->channel_checked_at !== null && $user->in_channel;
         }
 
         $status = is_array($response->result) ? ($response->result['status'] ?? 'left') : 'left';
