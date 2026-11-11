@@ -10,9 +10,9 @@ use Illuminate\Support\Facades\Log;
 
 /**
  * Channel-membership checks (spec §5.1). Normalizes Telegram member states,
- * caches on the user row with a TTL, and degrades gracefully: a Telegram error
- * never locks users out (fail-open with a logged warning). The bot must be an
- * admin of the channel for reliable getChatMember (documented in README).
+ * caches on the user row with a TTL. Telegram failures may temporarily allow
+ * previously verified members, but must never admit unverified users.
+ * The bot must be a channel administrator for reliable getChatMember checks.
  */
 final class TelegramMembershipService
 {
@@ -49,8 +49,9 @@ final class TelegramMembershipService
                 'description' => $response->description,
             ]);
 
-            // Fail-open: last known state if we ever checked, otherwise let them in.
-            return $user->channel_checked_at !== null ? $user->in_channel : true;
+            // Fail closed for new/unverified users. A previously verified
+            // member can keep using the bot during a temporary API outage.
+            return $user->channel_checked_at !== null && $user->in_channel;
         }
 
         $status = is_array($response->result) ? ($response->result['status'] ?? 'left') : 'left';
