@@ -1,0 +1,114 @@
+/* Liyubet Rewards Studio v2 — independently loaded CSS (no Tailwind build dependency).
+   Intentionally scoped to .ly-rewards so existing pages stay untouched. */
+.ly-rewards{--ly-ink:#201735;--ly-muted:#797189;--ly-line:#eae5f1;--ly-purple:#6d28d9;--ly-violet:#8b5cf6;--ly-soft:#f5f0ff;--ly-green:#047857;--ly-red:#b42332;--ly-orange:#b76d11;--ly-bg:#fff;display:flex;flex-direction:column;gap:22px;width:100%;max-width:none;min-width:0;color:var(--ly-ink);font-family:Inter,'Instrument Sans',ui-sans-serif,system-ui,-apple-system,sans-serif}
+.ly-rewards *, .ly-rewards *:before,.ly-rewards *:after{box-sizing:border-box}
+.fi-main:has(.ly-rewards) .fi-header{display:none!important}
+.fi-main:has(.ly-rewards) .fi-page-content{padding-top:0!important}
+.ly-rewards p{margin:0}.ly-rewards h1,.ly-rewards h2,.ly-rewards h3{margin:0;font-weight:760;letter-spacing:-.035em}
+.ly-rewards button,.ly-rewards input,.ly-rewards select{font:inherit}
+.ly-rewards button{cursor:pointer}.ly-rewards button:disabled{cursor:wait;opacity:.5}
+.ly-rewards :focus-visible{outline:3px solid #b6a0fa;outline-offset:2px}
+.ly-rewards a{text-decoration:none}
+.ly-rewards .ly-eyebrow{display:flex;align-items:center;gap:8px;font-size:10px;line-height:1.6;text-transform:uppercase;letter-spacing:.19em;font-weight:850;color:#9f79ed}
+.ly-rewards .ly-eyebrow:before{content:'';width:8px;height:8px;background:#a78bfa;border-radius:50%;box-shadow:0 0 0 4px #ffffff20}
+.ly-rewards .ly-hero{position:relative;overflow:hidden;isolation:isolate;border-radius:23px;background:linear-gradient(120deg,#22113c 0%,#48218a 58%,#733ae1 100%);padding:clamp(23px,3vw,36px) clamp(22px,3vw,40px);min-height:164px;display:flex;align-items:center;justify-content:space-between;gap:18px;box-shadow:0 18px 38px #46218f1a;color:#fff}
+.ly-rewards .ly-hero:before{position:absolute;content:'';z-index:-1;width:400px;height:400px;border-radius:50%;right:-130px;top:-260px;border:1px solid #ffffff28;box-shadow:0 0 0 48px #ffffff0a,0 0 0 105px #ffffff09}
+.ly-rewards .ly-hero:after{position:absolute;content:'';z-index:-1;width:160px;height:160px;border-radius:50%;right:19%;bottom:-140px;background:#bf95ff26;filter:blur(22px)}
+.ly-rewards .ly-hero h1{font-size:clamp(24px,3vw,34px);line-height:1.17;color:#fff;letter-spacing:-1.25px;margin:9px 0}
+.ly-rewards .ly-hero p{color:#d9c8fa;font-size:13px;line-height:1.7;max-width:640px}
+.ly-rewards .ly-hero .ly-action{flex:0 0 auto;border:1px solid #ffffff45;background:#ffffff20;color:#fff}
+.ly-rewards .ly-hero .ly-action:hover{background:#ffffff30}
+.ly-rewards .ly-nav{display:flex;gap:6px;align-items:center;padding:6px;border:1px solid var(--ly-line);border-radius:15px;background:#fff;overflow-x:auto;scrollbar-width:thin;box-shadow:0 3px 13px #29114308}
+.ly-rewards .ly-nav a{border-radius:10px;display:flex;align-items:center;gap:8px;padding:11px 13px;font-size:12px;font-weight:700;color:#7b728e;white-space:nowrap;transition:.18s}
+.ly-rewards .ly-nav a .ly-nav-dot{width:6px;height:6px;background:#ccc2d7;border-radius:50%;flex:0 0 auto}
+.ly-rewards .ly-nav a:hover{background:#f5f1ff;color:#5b21b6}
+.ly-rewards .ly-nav a.is-active{color:#5624ac;background:#f0e9ff;box-shadow:inset 0 0 0 1px #e9dcff}
+.ly-rewards .ly-nav a.is-active .ly-nav-dot{background:#7c3aed}
+.ly-rewards .ly-grid{display:grid;gap:15px;min-width:0}.ly-rewards .ly-grid-4{grid-template-columns:repeat(4,minmax(0,1fr))}.ly-rewards .ly-grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}.ly-rewards .ly-grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.ly-rewards .ly-stat{position:relative;overflow:hidden;min-height:130px;background:#fff;border:1px solid var(--ly-line);border-radius:17px;padding:19px 19px 16px;box-shadow:0 6px 18px #32114708;transition:transform .2s,box-shadow .2s}
+.ly-rewards .ly-stat:hover{transform:translateY(-2px);box-shadow:0 11px 25px #3211470c}
+.ly-rewards .ly-stat small{display:block;font-size:11px;font-weight:700;color:#827a90;letter-spacing:.015em;margin-bottom:14px}
+.ly-rewards .ly-stat strong{display:block;font-size:clamp(20px,2.2vw,29px);color:#25173f;letter-spacing:-.06em;line-height:1.1;font-weight:820;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.ly-rewards .ly-stat em{display:block;font-size:10px;font-style:normal;color:#91899e;margin-top:9px}
+.ly-rewards .ly-stat .ly-symbol{position:absolute;right:15px;top:16px;display:grid;place-items:center;width:34px;height:34px;border-radius:10px;background:#f1eaff;color:#6d28d9;font-size:15px}
+.ly-rewards .ly-stat.ly-green .ly-symbol{background:#e6f6ed;color:#048057}.ly-rewards .ly-stat.ly-warm .ly-symbol{background:#fff3df;color:#b96e09}.ly-rewards .ly-stat.ly-blue .ly-symbol{background:#e8f1ff;color:#2369c3}
+.ly-rewards .ly-panel{border:1px solid var(--ly-line);background:#fff;border-radius:18px;min-width:0;overflow:hidden;box-shadow:0 8px 26px #31104908}
+.ly-rewards .ly-panel-body{padding:clamp(16px,2.5vw,25px)}
+.ly-rewards .ly-panel-head{padding:20px 23px;display:flex;justify-content:space-between;align-items:center;gap:15px;border-bottom:1px solid #f0ecf5;flex-wrap:wrap}
+.ly-rewards .ly-panel-head h2{font-size:17px;color:#231735;letter-spacing:-.04em}
+.ly-rewards .ly-panel-head p{font-size:12px;color:#837a93;margin-top:5px;line-height:1.6}
+.ly-rewards .ly-small{font-size:12px;color:var(--ly-muted);line-height:1.65}
+.ly-rewards .ly-hint{display:flex;gap:12px;align-items:flex-start;padding:15px 18px;background:#f8f5ff;border:1px solid #eee6ff;border-radius:13px;font-size:12px;line-height:1.65;color:#665481}
+.ly-rewards .ly-hint > span{font-size:20px;line-height:1.1}
+.ly-rewards .ly-hint strong{color:#4c257f}.ly-rewards .ly-hint.ly-success{background:#eefbf5;border-color:#c9eadc;color:#35735b}.ly-rewards .ly-hint.ly-warning{background:#fff9ec;border-color:#f8e4b6;color:#98621b}
+.ly-rewards .ly-action{min-height:38px;display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid #ded5eb;border-radius:10px;background:#fff;color:#655978;padding:9px 14px;font-size:12px;font-weight:750;line-height:1.25;white-space:nowrap;box-shadow:0 1px 2px #250b380b;transition:transform .15s,background .15s,border-color .15s}
+.ly-rewards .ly-action:hover{background:#f8f5ff;border-color:#beabe3;transform:translateY(-1px)}
+.ly-rewards .ly-action.ly-primary{background:#6d28d9;border-color:#6d28d9;color:white;box-shadow:0 3px 8px #6d28d924}
+.ly-rewards .ly-action.ly-primary:hover{background:#5522b5}
+.ly-rewards .ly-action.ly-ghost{border-color:#eae4f1;background:#faf9fc;color:#695b7f}
+.ly-rewards .ly-action.ly-danger{background:#fff1f3;color:#b42332;border-color:#ffd3d9}
+.ly-rewards .ly-action.ly-danger:hover{background:#ffe4e8}
+.ly-rewards .ly-action.ly-success{background:#e8f7ee;color:#057247;border-color:#c7e5d5}
+.ly-rewards .ly-action.ly-xs{min-height:30px;padding:6px 10px;font-size:11px;border-radius:8px}
+.ly-rewards .ly-tools{display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+.ly-rewards .ly-segment{display:inline-flex;align-items:center;gap:2px;background:#f8f6fb;border:1px solid #eae5f1;border-radius:12px;padding:4px}
+.ly-rewards .ly-segment button{border:0;background:transparent;padding:8px 12px;border-radius:8px;font-size:12px;font-weight:730;color:#867b94;transition:.16s}
+.ly-rewards .ly-segment button:hover{background:#fff;color:#6333a8}.ly-rewards .ly-segment button.is-active{background:#fff;color:#5724ae;box-shadow:0 1px 5px #2e10441a}
+.ly-rewards .ly-table-wrap{overflow:auto;max-width:100%;scrollbar-color:#d8cde5 transparent}
+.ly-rewards .ly-table{width:100%;border-spacing:0;border-collapse:collapse;font-size:12px;min-width:580px}
+.ly-rewards .ly-table th{padding:14px 18px;text-align:left;white-space:nowrap;font-size:10px;letter-spacing:.095em;text-transform:uppercase;color:#9586a9;font-weight:820;background:#fcfbfd;border-bottom:1px solid #f0eaf5}
+.ly-rewards .ly-table td{border-bottom:1px solid #f4eff7;padding:15px 18px;color:#4b415d;vertical-align:middle;line-height:1.5}
+.ly-rewards .ly-table tbody tr:last-child td{border-bottom:0}.ly-rewards .ly-table tbody tr:hover{background:#fbf9ff}
+.ly-rewards .ly-table .ly-right{text-align:right;font-variant-numeric:tabular-nums}.ly-rewards .ly-table .ly-id{font-family:ui-monospace,monospace;font-size:11px;color:#82768f}
+.ly-rewards .ly-table .ly-name{font-size:12px;font-weight:770;color:#2e2045}
+.ly-rewards .ly-table .ly-sub{display:block;font-size:10px;color:#9990a4;margin-top:4px}
+.ly-rewards .ly-avatar{display:grid;place-items:center;width:32px;height:32px;flex:0 0 32px;border-radius:10px;background:linear-gradient(140deg,#eee5ff,#dfd7f8);color:#6838aa;font-size:13px;font-weight:850}
+.ly-rewards .ly-person{display:flex;align-items:center;gap:10px;min-width:0}
+.ly-rewards .ly-pill{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:99px;font-size:10px;font-weight:810;white-space:nowrap;border:1px solid #e4dceb;background:#f8f4ff;color:#754db2}
+.ly-rewards .ly-pill:before{content:'';height:6px;width:6px;border-radius:50%;background:currentColor}
+.ly-rewards .ly-pill.ly-ok{border-color:#cdeedc;background:#ebf9f0;color:#088458}.ly-rewards .ly-pill.ly-review{border-color:#ffe1b2;background:#fff6e6;color:#a76712}.ly-rewards .ly-pill.ly-bad{border-color:#ffd0d6;background:#fff1f2;color:#c23345}.ly-rewards .ly-pill.ly-muted{border-color:#e9e4ee;background:#f8f7fa;color:#8a8092}
+.ly-rewards .ly-empty{padding:44px 22px;text-align:center;color:#93899f;font-size:12px;line-height:1.7}
+.ly-rewards .ly-empty .ly-empty-icon{display:grid;place-items:center;width:56px;height:56px;background:#f1ebff;border-radius:18px;margin:0 auto 15px;color:#7339d4;font-size:27px}
+.ly-rewards .ly-empty strong{display:block;font-size:15px;color:#4a3c60;margin-bottom:6px}
+.ly-rewards .ly-field{display:flex;flex-direction:column;gap:8px;min-width:0}
+.ly-rewards .ly-field label{font-size:11px;font-weight:780;color:#615575}
+.ly-rewards .ly-input{width:100%;min-height:42px;padding:10px 13px;background:#fff;border:1px solid #ded5e9;border-radius:10px;color:#2a1c40;font-size:12px;outline:0;transition:border-color .15s,box-shadow .15s}
+.ly-rewards .ly-input:focus{border-color:#9463e5;box-shadow:0 0 0 3px #d8c1ff60}
+.ly-rewards .ly-input::placeholder{color:#aaa2b6}
+.ly-rewards .ly-input[type=file]{padding:10px;background:#fbf9ff}
+.ly-rewards .ly-form-grid{display:grid;gap:16px;grid-template-columns:repeat(2,minmax(0,1fr))}
+.ly-rewards .ly-form-row{display:flex;flex-wrap:wrap;align-items:flex-end;gap:12px}
+.ly-rewards .ly-form-row .ly-field{flex:1 1 160px}
+.ly-rewards .ly-form-row .ly-field.ly-wide{flex:2 1 300px}
+.ly-rewards .ly-form-error{font-size:11px;font-weight:700;color:#ba263b}
+.ly-rewards .ly-split{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(300px,1fr);gap:16px;min-width:0}
+.ly-rewards .ly-progress{display:flex;gap:10px;align-items:center}
+.ly-rewards .ly-progress-track{height:9px;flex:1;min-width:40px;background:#eee8f5;border-radius:12px;overflow:hidden}
+.ly-rewards .ly-progress-track span{display:block;height:100%;border-radius:12px;background:linear-gradient(90deg,#8653e9,#5531ad)}
+.ly-rewards .ly-progress strong{font-size:11px;min-width:39px;text-align:right;color:#61408f;font-variant-numeric:tabular-nums}
+.ly-rewards .ly-stock-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
+.ly-rewards .ly-stock-card{padding:17px 19px;border:1px solid #ece4f3;border-radius:15px;background:linear-gradient(145deg,#ffffff,#fcfaff);display:flex;flex-direction:column;gap:13px}
+.ly-rewards .ly-stock-card h3{font-size:17px}.ly-rewards .ly-stock-card .ly-stock-number{font-size:27px;font-weight:840;color:#3d2167;letter-spacing:-.05em}
+.ly-rewards .ly-stock-card .ly-stock-meta{font-size:11px;color:#80758c}.ly-rewards .ly-stock-card .ly-stock-meta b{color:#635573}
+.ly-rewards .ly-chart{min-height:200px;display:flex;align-items:flex-end;justify-content:space-between;gap:7px;padding:14px 6px 3px}
+.ly-rewards .ly-chart-col{display:flex;flex:1;flex-direction:column;align-items:center;justify-content:flex-end;gap:8px;min-width:0;height:184px}
+.ly-rewards .ly-chart-bar{width:min(35px,100%);min-height:3px;background:linear-gradient(180deg,#b18af9,#6c34d6);border-radius:8px 8px 3px 3px;position:relative}
+.ly-rewards .ly-chart-bar span{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);font-size:10px;font-weight:750;color:#704ba4;white-space:nowrap}
+.ly-rewards .ly-chart-col small{font-size:9px;color:#91899e;text-overflow:ellipsis;overflow:hidden;white-space:nowrap;max-width:100%}
+.ly-rewards .ly-code-box{background:#241334;color:#f6eeff;border-radius:11px;padding:14px 17px;font-size:15px;letter-spacing:.07em;word-break:break-all;font-family:ui-monospace,monospace;margin:12px 0}
+.ly-rewards .ly-form-footer{border-top:1px solid #eee7f5;padding-top:20px;display:flex;align-items:center;justify-content:space-between;gap:15px}
+.ly-rewards .ly-form-footer p{font-size:11px;color:#8e8498;max-width:520px}
+.ly-rewards .ly-form-shell .fi-section{box-shadow:none!important;border:1px solid #e9e3ef!important;border-radius:14px!important;overflow:hidden}
+.ly-rewards .ly-form-shell .fi-section-header{background:linear-gradient(105deg,#fcfaff,#ffffff)!important}
+.ly-rewards .ly-form-shell .fi-fo-field-wrp-label label{color:#443354!important}
+.ly-rewards .ly-pagination{padding:12px 19px;border-top:1px solid #f1ecf6;font-size:12px}
+.ly-rewards .ly-pagination nav{width:100%}
+.ly-rewards .ly-inline-flex{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.ly-rewards .ly-divider{height:1px;background:#f1edf6;margin:6px 0}
+.ly-rewards .ly-no-wrap{white-space:nowrap}
+.ly-rewards .ly-strong{font-weight:820;color:#302044}
+.ly-rewards .ly-loading{display:none;font-size:11px;color:#855cb6}
+.ly-rewards [wire\:loading] {transition:opacity .2s}
+@media (max-width:1150px){.ly-rewards .ly-grid-4{grid-template-columns:repeat(2,minmax(0,1fr))}.ly-rewards .ly-split{grid-template-columns:1fr}.ly-rewards .ly-stock-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:650px){.ly-rewards{gap:15px}.ly-rewards .ly-hero{border-radius:16px;padding:25px 19px;min-height:0;display:block}.ly-rewards .ly-hero h1{font-size:26px}.ly-rewards .ly-hero .ly-action{margin-top:16px}.ly-rewards .ly-nav{border-radius:12px}.ly-rewards .ly-nav a{font-size:11px;padding:10px}.ly-rewards .ly-grid-2,.ly-rewards .ly-grid-3,.ly-rewards .ly-grid-4{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.ly-rewards .ly-stat{min-height:115px;padding:14px}.ly-rewards .ly-stat strong{font-size:21px}.ly-rewards .ly-stat small{padding-right:30px;font-size:10px;margin-bottom:12px;min-height:26px}.ly-rewards .ly-stat .ly-symbol{width:28px;height:28px;right:10px;top:10px}.ly-rewards .ly-panel{border-radius:14px}.ly-rewards .ly-panel-head{padding:17px}.ly-rewards .ly-stock-grid{grid-template-columns:1fr}.ly-rewards .ly-form-grid{grid-template-columns:1fr}.ly-rewards .ly-table th,.ly-rewards .ly-table td{padding:12px 13px}.ly-rewards .ly-form-footer{align-items:flex-start;flex-direction:column}.ly-rewards .ly-action{white-space:normal}.ly-rewards .ly-chart{padding:12px 1px}.ly-rewards .ly-chart-col{gap:5px}}
+@media (prefers-reduced-motion:reduce){.ly-rewards *{scroll-behavior:auto!important;transition:none!important}}
