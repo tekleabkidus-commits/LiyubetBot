@@ -78,7 +78,7 @@ it('allocates exactly one encrypted promo code per redemption and preserves requ
 
     expect($first)->toMatchArray(['status' => 'issued', 'code' => 'MY-SECRET-CODE-50', 'amount' => 50])
         ->and($repeated)->toBe($first)
-        ->and($second['status'])->toBe('no_stock')
+        ->and($second['status'])->toBe('cooldown')
         ->and($engine->stats($user)['balance_cents'])->toBe(5000)
         ->and(DB::table('reward_withdrawals')->count())->toBe(1)
         ->and(DB::table('promo_codes')->where('id', $inserted)->value('status'))->toBe('issued');

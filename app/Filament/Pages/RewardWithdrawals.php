@@ -6,6 +6,7 @@ use App\Services\AuditLogger;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Crypt;
 
 class RewardWithdrawals extends Page
 {
@@ -15,6 +16,8 @@ class RewardWithdrawals extends Page
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-receipt-percent';
     protected static ?int $navigationSort = 3;
     public string $filter = 'all';
+    public ?int $revealedWithdrawalId = null;
+    public ?string $revealedCode = null;
 
     public static function canAccess(): bool
     {
@@ -25,6 +28,24 @@ class RewardWithdrawals extends Page
     {
         abort_unless(in_array($status, ['all', 'issued', 'flagged'], true), 422);
         $this->filter = $status;
+    }
+
+    public function reveal(int $id): void
+    {
+        abort_unless(static::canAccess(), 403);
+        $record = DB::table('reward_withdrawals as w')
+            ->join('promo_codes as p', 'p.id', '=', 'w.promo_code_id')
+            ->where('w.id', $id)->first(['w.id','p.code_ciphertext']);
+        abort_unless($record !== null, 404);
+        $this->revealedWithdrawalId = $id;
+        $this->revealedCode = Crypt::decryptString($record->code_ciphertext);
+        app(AuditLogger::class)->log('rewards.withdrawal.code_revealed', null, ['withdrawal_id' => $id]);
+    }
+
+    public function hideCode(): void
+    {
+        $this->revealedWithdrawalId = null;
+        $this->revealedCode = null;
     }
 
     public function flag(int $id, bool $flag = true): void
