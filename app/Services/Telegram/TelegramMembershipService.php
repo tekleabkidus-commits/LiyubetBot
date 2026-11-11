@@ -33,7 +33,8 @@ final class TelegramMembershipService
             return true;
         }
         if ($channelId === null || $channelId === '') {
-            return false;
+            // Local/test setups may work without a channel; production never does.
+            return app()->environment(['local', 'testing']);
         }
 
         $ttlMinutes = (int) config('telegram.membership_ttl_minutes');

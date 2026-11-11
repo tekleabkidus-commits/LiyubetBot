@@ -57,6 +57,13 @@ final class RewardService
                 return false;
             }
 
+            // Never credit historical Telegram signups from before launch.
+            $since = (string) $this->settings->get('rewards.eligible_since', '');
+            if ($since === '' || $joined->joined_at === null
+                || $joined->joined_at->lt(\Carbon\Carbon::parse($since))) {
+                return false;
+            }
+
             $referrer = User::query()->find($joined->referred_by_user_id);
             if (! $referrer) {
                 return false;

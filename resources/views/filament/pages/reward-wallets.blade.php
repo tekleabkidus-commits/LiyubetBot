@@ -12,7 +12,7 @@
     <div class="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-700 mb-5">
         <table class="w-full text-sm"><thead><tr><th class="p-3 text-left">Player</th><th class="p-3 text-left">Telegram ID</th><th class="p-3 text-right">Available ETB</th><th class="p-3 text-right">Earned ETB</th><th class="p-3 text-right">Redeemed ETB</th><th class="p-3 text-left">Controls</th></tr></thead>
         <tbody>@forelse($wallets as $wallet)<tr class="border-t border-gray-200 dark:border-gray-700">
-            <td class="p-3">{{ $wallet->first_name }} @if($wallet->username)(@{{ $wallet->username }})@endif</td>
+            <td class="p-3">{{ $wallet->first_name }} @if($wallet->username)({{ '@'.$wallet->username }})@endif</td>
             <td class="p-3">{{ $wallet->tg_chat_id }}</td>
             <td class="p-3 text-right">{{ number_format($wallet->balance_cents / 100, 2) }}</td>
             <td class="p-3 text-right">{{ number_format($wallet->earned_cents / 100, 2) }}</td>

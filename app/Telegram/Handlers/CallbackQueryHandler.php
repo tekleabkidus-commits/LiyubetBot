@@ -156,7 +156,7 @@ final class CallbackQueryHandler
     {
         $lang = $this->locale->resolve($user);
 
-        if ($this->membership->isMember($user, forceRefresh: true)) {
+        if ($this->membership->isMember($user, forceRefresh: true, allowStaleOnError: false)) {
             $this->client->answerCallbackQuery($callbackId, $this->locale->uiText('joined_ok', $lang));
             $this->rewards->qualify($user);
             $this->welcome->sendWelcome($user);

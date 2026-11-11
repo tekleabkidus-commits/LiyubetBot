@@ -33,6 +33,13 @@ final class WelcomeService
         ) ?? $this->locale->uiText('welcome_fallback', $lang);
 
         $text = $this->tokens->renderForUser($template, $user);
+        $features = (array) $this->settings->get('features', []);
+        if ((bool) ($features['referrals'] ?? true) && (bool) $this->settings->get('rewards.enabled', true)) {
+            $username = ltrim((string) config('telegram.bot_username'), '@');
+            if ($username !== '') {
+                $text .= "\n\n🎁 Your referral link: https://t.me/{$username}?start=ref_{$user->id}\nTap Referral to check your earnings and withdraw rewards.";
+            }
+        }
 
         $mediaId = $this->settings->get('welcome.media_file_id');
         $media = $mediaId !== null ? MediaFile::query()->find($mediaId) : null;
