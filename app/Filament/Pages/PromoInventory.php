@@ -9,12 +9,14 @@ use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Illuminate\Support\Facades\DB;
 use Livewire\WithFileUploads;
+use Livewire\WithPagination;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Writer\XLSX\Writer;
 
 class PromoInventory extends Page
 {
     use WithFileUploads;
+    use WithPagination;
 
     protected string $view = 'filament.pages.promo-inventory';
     protected static ?string $navigationLabel = 'Promo Codes';
@@ -25,6 +27,7 @@ class PromoInventory extends Page
     public int $denomination = 50;
     public string $filter = 'all';
     public string $lastImport = '';
+    public string $searchTerm = '';
 
     public static function canAccess(): bool
     {
@@ -64,6 +67,14 @@ class PromoInventory extends Page
     {
         abort_unless(in_array($value, ['all', 'available', 'issued', 'disabled'], true), 422);
         $this->filter = $value;
+        $this->resetPage();
+    }
+
+    public function searchInventory(): void
+    {
+        abort_unless(static::canAccess(), 403);
+        $this->searchTerm = mb_substr(trim($this->searchTerm), 0, 80);
+        $this->resetPage();
     }
 
     public function setStatus(int $id, string $status): void
@@ -102,8 +113,19 @@ class PromoInventory extends Page
         $codes = DB::table('promo_codes as p')
             ->leftJoin('users as u', 'u.id', '=', 'p.issued_to_user_id')
             ->when($this->filter !== 'all', fn ($q) => $q->where('p.status', $this->filter))
+            ->when(ctype_digit($this->searchTerm), function ($q) {
+                $id = (int) $this->searchTerm;
+                $q->where(fn ($q) => $q->where('p.id', $id)->orWhere('u.tg_chat_id', $id));
+            })
+            ->when($this->searchTerm !== '' && ! ctype_digit($this->searchTerm), fn ($q) => $q->whereRaw('1=0'))
             ->select('p.id', 'p.denomination_cents', 'p.status', 'p.import_batch_id', 'p.issued_at', 'p.created_at', 'u.tg_chat_id')
-            ->orderByDesc('p.id')->limit(100)->get();
-        return compact('stock', 'codes');
+            ->orderByDesc('p.id')->paginate(25);
+        return [
+            'stock' => $stock, 'codes' => $codes,
+            'inventoryTotal' => DB::table('promo_codes')->count(),
+            'inventoryAvailable' => DB::table('promo_codes')->where('status', 'available')->count(),
+            'inventoryIssued' => DB::table('promo_codes')->where('status', 'issued')->count(),
+            'inventoryDisabled' => DB::table('promo_codes')->where('status', 'disabled')->count(),
+        ];
     }
 }

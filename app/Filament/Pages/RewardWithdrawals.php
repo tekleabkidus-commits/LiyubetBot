@@ -7,15 +7,18 @@ use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Crypt;
+use Livewire\WithPagination;
 
 class RewardWithdrawals extends Page
 {
+    use WithPagination;
     protected string $view = 'filament.pages.reward-withdrawals';
     protected static ?string $navigationLabel = 'Withdrawal History';
     protected static string|\UnitEnum|null $navigationGroup = 'Rewards';
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-receipt-percent';
     protected static ?int $navigationSort = 3;
     public string $filter = 'all';
+    public string $searchTerm = '';
     public ?int $revealedWithdrawalId = null;
     public ?string $revealedCode = null;
 
@@ -28,6 +31,14 @@ class RewardWithdrawals extends Page
     {
         abort_unless(in_array($status, ['all', 'issued', 'flagged'], true), 422);
         $this->filter = $status;
+        $this->resetPage();
+    }
+
+    public function searchWithdrawals(): void
+    {
+        abort_unless(static::canAccess(), 403);
+        $this->searchTerm = mb_substr(trim($this->searchTerm), 0, 80);
+        $this->resetPage();
     }
 
     public function reveal(int $id): void
@@ -79,8 +90,13 @@ class RewardWithdrawals extends Page
         $withdrawals = DB::table('reward_withdrawals as w')
             ->join('users as u', 'u.id', '=', 'w.user_id')
             ->when($this->filter !== 'all', fn ($q) => $q->where('w.status', $this->filter))
+            ->when(ctype_digit($this->searchTerm), function ($q) {
+                $id = (int) $this->searchTerm;
+                $q->where(fn ($q) => $q->where('w.id', $id)->orWhere('u.tg_chat_id', $id));
+            })
+            ->when($this->searchTerm !== '' && ! ctype_digit($this->searchTerm), fn ($q) => $q->whereRaw('1=0'))
             ->select('w.id', 'u.tg_chat_id', 'u.first_name', 'w.amount_cents', 'w.status', 'w.created_at', 'w.promo_code_id')
-            ->orderByDesc('w.id')->limit(100)->get();
+            ->orderByDesc('w.id')->paginate(25);
         return [
             'withdrawals' => $withdrawals,
             'totalIssued' => DB::table('reward_withdrawals')->count(),

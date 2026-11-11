@@ -39,7 +39,26 @@ class ReferralReports extends Page
         $daily = DB::table('referral_rewards')->where('qualified_at', '>=', $cutoff)
             ->selectRaw('date(qualified_at) as day, count(*) as referrals, sum(amount_cents) as amount_cents')
             ->groupByRaw('date(qualified_at)')->orderByDesc('day')->limit(90)->get();
+        $periodQualified = (int) DB::table('referral_rewards')->where('qualified_at', '>=', $cutoff)->count();
+        $periodEarned = (int) DB::table('referral_rewards')->where('qualified_at', '>=', $cutoff)->sum('amount_cents');
+        $counts = $daily->keyBy('day');
+        $chartDays = [];
+        $daysForChart = min(14, $this->days);
+        for ($i = $daysForChart - 1; $i >= 0; $i--) {
+            $date = now()->subDays($i)->format('Y-m-d');
+            $chartDays[] = [
+                'date' => $date,
+                'label' => now()->subDays($i)->format('d M'),
+                'count' => (int) ($counts[$date]->referrals ?? 0),
+            ];
+        }
+        $chartMax = max(1, ...array_column($chartDays, 'count'));
+
         return [
+            'periodQualified' => $periodQualified,
+            'periodEarned' => $periodEarned,
+            'chartDays' => $chartDays,
+            'chartMax' => $chartMax,
             'totalUsers' => User::count(),
             'referredUsers' => User::whereNotNull('referred_by_user_id')->count(),
             'qualified' => DB::table('referral_rewards')->count(),
