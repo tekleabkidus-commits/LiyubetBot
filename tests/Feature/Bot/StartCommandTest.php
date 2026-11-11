@@ -31,7 +31,7 @@ it('creates a new user and sends the welcome as the /start reply', function () {
 
     expect($sent)->toHaveCount(1)
         ->and($sent[0]['params']['text'])->toContain('Sara')
-        ->and($sent[0]['params']['text'])->toContain('Betna');
+        ->and($sent[0]['params']['text'])->toContain('Liyubet');
 });
 
 it('fires UserJoined for new users only', function () {
@@ -71,10 +71,9 @@ it('attaches the main menu keyboard to the welcome when menus exist', function (
 
     $keyboard = fakeTelegram()->lastSentTo(2001)['params']['reply_markup'];
 
-    expect($keyboard['inline_keyboard'][0][0])->toMatchArray([
-        'text' => 'Visit site',
-        'url' => 'https://example.test',
-    ]);
+    expect($keyboard['inline_keyboard'])->toHaveCount(2)
+        ->and($keyboard['inline_keyboard'][0][0]['text'])->toContain('Sport')
+        ->and($keyboard['inline_keyboard'][0][1]['text'])->toContain('Casino');
 });
 
 it('sends welcome media and persists the telegram file_id for reuse', function () {

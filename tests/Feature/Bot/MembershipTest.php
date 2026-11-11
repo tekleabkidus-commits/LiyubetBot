@@ -9,7 +9,7 @@ use Database\Seeders\SettingsSeeder;
 beforeEach(function () {
     $this->seed(SettingsSeeder::class);
     app(SettingsService::class)->set('channel.id', -1001234567890);
-    app(SettingsService::class)->set('channel.url', 'https://t.me/Betna_channel');
+    app(SettingsService::class)->set('channel.url', 'https://t.me/Liyubet_channel');
 });
 
 it('lets channel members straight through to the welcome', function () {
@@ -21,7 +21,7 @@ it('lets channel members straight through to the welcome', function () {
 
     expect($user->in_channel)->toBeTrue()
         ->and($user->channel_checked_at)->not->toBeNull()
-        ->and(fakeTelegram()->lastSentTo(5001)['params']['text'])->toContain('Welcome to Betna');
+        ->and(fakeTelegram()->lastSentTo(5001)['params']['text'])->toContain('Welcome to Liyubet');
 });
 
 it('shows non-members the join gate with join and re-check buttons', function () {
@@ -34,17 +34,17 @@ it('shows non-members the join gate with join and re-check buttons', function ()
 
     expect(User::query()->where('tg_chat_id', 5001)->first()->in_channel)->toBeFalse()
         ->and($sent['params']['text'])->toContain('join our channel')
-        ->and($rows[0][0]['url'])->toBe('https://t.me/Betna_channel')
+        ->and($rows[0][0]['url'])->toBe('https://t.me/Liyubet_channel')
         ->and($rows[1][0]['callback_data'])->toBe('join:check');
 });
 
-it('fails open when telegram errors on the membership check', function () {
+it('fails closed for unverified users when telegram cannot verify membership', function () {
     fakeTelegram()->failMembershipChecks();
 
     postWebhook(telegramMessageUpdate(5001, '/start'));
 
-    // Never checked before + Telegram down → let them in, log a warning.
-    expect(fakeTelegram()->lastSentTo(5001)['params']['text'])->toContain('Welcome to Betna');
+    // Never checked before + Telegram down → show join gate, not menu.
+    expect(fakeTelegram()->lastSentTo(5001)['params']['text'])->toContain('join our channel');
 });
 
 it('passes the gate after joining via the re-check button', function () {
@@ -58,7 +58,7 @@ it('passes the gate after joining via the re-check button', function () {
     $user = User::query()->where('tg_chat_id', 5001)->first();
 
     expect($user->in_channel)->toBeTrue()
-        ->and(fakeTelegram()->lastSentTo(5001)['params']['text'])->toContain('Welcome to Betna')
+        ->and(fakeTelegram()->lastSentTo(5001)['params']['text'])->toContain('Welcome to Liyubet')
         ->and(fakeTelegram()->callsTo('answerCallbackQuery'))->toHaveCount(1);
 });
 

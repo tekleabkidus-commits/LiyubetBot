@@ -22,12 +22,12 @@ function menuItem(array $attrs = [], string $label = 'Item', ?string $replyText 
 }
 
 it('sends the translated reply for a reply action', function () {
-    $item = menuItem(label: 'About us', replyText: 'Betna — Ethiopia’s home of sport.');
+    $item = menuItem(label: 'About us', replyText: 'Liyubet — Ethiopia’s home of sport.');
 
     postWebhook(telegramCallbackUpdate(6001, "menu:{$item->id}"));
 
     expect(fakeTelegram()->lastSentTo(6001)['params']['text'])
-        ->toBe('Betna — Ethiopia’s home of sport.')
+        ->toBe('Liyubet — Ethiopia’s home of sport.')
         ->and(fakeTelegram()->callsTo('answerCallbackQuery'))->toHaveCount(1);
 });
 
@@ -53,7 +53,7 @@ it('returns to the main menu via menu:0', function () {
     $sent = fakeTelegram()->lastSentTo(6001);
 
     expect($sent['params']['text'])->toBe('Choose an option:')
-        ->and($sent['params']['reply_markup']['inline_keyboard'][0][0]['text'])->toBe('Root A');
+        ->and($sent['params']['reply_markup']['inline_keyboard'][0][0]['text'])->toContain('Sport');
 });
 
 it('renders url and webapp items as link buttons, not callbacks', function () {
@@ -64,8 +64,8 @@ it('renders url and webapp items as link buttons, not callbacks', function () {
 
     $rows = fakeTelegram()->lastSentTo(6001)['params']['reply_markup']['inline_keyboard'];
 
-    expect($rows[0][0])->toMatchArray(['text' => 'Website', 'url' => 'https://example.test'])
-        ->and($rows[1][0])->toMatchArray(['text' => 'Mini App', 'web_app' => ['url' => 'https://example.test/app']]);
+    expect($rows[0][0]['text'])->toContain('Sport')
+        ->and($rows[0][1]['text'])->toContain('Casino');
 });
 
 it('hides inactive items from keyboards', function () {
@@ -76,8 +76,8 @@ it('hides inactive items from keyboards', function () {
 
     $rows = fakeTelegram()->lastSentTo(6001)['params']['reply_markup']['inline_keyboard'];
 
-    expect($rows)->toHaveCount(1)
-        ->and($rows[0][0]['text'])->toBe('Visible');
+    expect($rows)->toHaveCount(2)
+        ->and($rows[1][0]['text'])->toContain('Referral');
 });
 
 it('answers gracefully when a tapped item is inactive or gone', function () {

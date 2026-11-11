@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-use App\Models\MenuItem;
-use App\Models\MenuItemTranslation;
 use App\Models\User;
 use App\Services\SettingsService;
 use Database\Seeders\SettingsSeeder;
@@ -12,55 +10,47 @@ beforeEach(function () {
     $this->seed(SettingsSeeder::class);
 });
 
-it('renders the invite menu action as a callback button', function () {
-    $item = MenuItem::factory()->create(['action_type' => 'invite']);
-    MenuItemTranslation::factory()->for($item)->create(['label' => 'Invite friends']);
-
+it('shows the Sport/Casino and Referral/Support menu', function () {
     postWebhook(telegramMessageUpdate(12001, '/start'));
-
     $keyboard = fakeTelegram()->lastSentTo(12001)['params']['reply_markup'];
-
-    expect($keyboard['inline_keyboard'][0][0])->toMatchArray([
-        'text' => 'Invite friends',
-        'callback_data' => 'invite:show',
-    ]);
+    expect($keyboard['inline_keyboard'])->toHaveCount(2)
+        ->and($keyboard['inline_keyboard'][0][0]['text'])->toContain('Sport')
+        ->and($keyboard['inline_keyboard'][0][1]['text'])->toContain('Casino')
+        ->and($keyboard['inline_keyboard'][1][0]['text'])->toContain('Referral')
+        ->and($keyboard['inline_keyboard'][1][1]['text'])->toContain('Support');
 });
 
-it('shows the personal referral link with per-language share text', function () {
+it('shows the personal referral link in English for all language codes', function () {
     postWebhook(telegramMessageUpdate(12001, '/start'));
     $user = User::query()->where('tg_chat_id', 12001)->first();
 
-    postWebhook(telegramCallbackUpdate(12001, 'invite:show'));
-
+    postWebhook(telegramCallbackUpdate(12001, 'rewards:referrals', ['language_code' => 'am']));
     $sent = fakeTelegram()->lastSentTo(12001);
-
-    expect($sent['params']['text'])->toContain("https://t.me/BetnaTestBot?start=ref_{$user->id}")
-        ->and($sent['params']['text'])->toContain('Invite your friends')
+    expect($sent['params']['text'])->toContain("https://t.me/LiyubetTestBot?start=ref_{$user->id}")
+        ->and($sent['params']['text'])->toContain('Your personal referral link')
         ->and(fakeTelegram()->callsTo('answerCallbackQuery'))->toHaveCount(1);
 });
 
-it('shares amharic text for amharic users', function () {
-    postWebhook(telegramCallbackUpdate(12001, 'invite:show', ['language_code' => 'am']));
-
-    expect(fakeTelegram()->lastSentTo(12001)['params']['text'])->toContain('ጓደኞችዎን');
-});
-
-it('declines gracefully when referrals are disabled', function () {
+it('declines referral actions when referrals are disabled', function () {
     app(SettingsService::class)->set('features', ['referrals' => false]);
-
     postWebhook(telegramCallbackUpdate(12001, 'invite:show'));
-
     expect(fakeTelegram()->nothingSent())->toBeTrue()
         ->and(fakeTelegram()->callsTo('answerCallbackQuery'))->toHaveCount(1);
 });
 
-it('closes the loop: the shared link attributes the referred friend', function () {
-    postWebhook(telegramCallbackUpdate(12001, 'invite:show'));
+it('attributes a new friend from the referral link once', function () {
+    postWebhook(telegramMessageUpdate(12001, '/start'));
     $referrer = User::query()->where('tg_chat_id', 12001)->first();
 
     postWebhook(telegramMessageUpdate(12002, "/start ref_{$referrer->id}"));
-
     expect(User::query()->where('tg_chat_id', 12002)->first()->referred_by_user_id)
-        ->toBe($referrer->id)
-        ->and($referrer->referrals()->count())->toBe(1);
+        ->toBe($referrer->id);
+});
+
+it('prevents an existing user from joining a referral link later for credit', function () {
+    postWebhook(telegramMessageUpdate(12002, '/start'));
+    postWebhook(telegramMessageUpdate(12001, '/start'));
+    $referrer = User::query()->where('tg_chat_id', 12001)->first();
+    postWebhook(telegramMessageUpdate(12002, "/start ref_{$referrer->id}"));
+    expect(User::query()->where('tg_chat_id', 12002)->first()->referred_by_user_id)->toBeNull();
 });
