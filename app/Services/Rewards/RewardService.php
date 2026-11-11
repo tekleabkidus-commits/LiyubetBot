@@ -190,7 +190,7 @@ final class RewardService
 
             // PostgreSQL row lock serializes claims even under simultaneous callbacks.
             $promo = DB::table('promo_codes')->where('status', 'available')
-                ->where('denomination_cents', $cost)->orderBy('id')->lockForUpdate()->first();
+                ->where('denomination_cents', $cost)->orderBy('id')->lock('FOR UPDATE SKIP LOCKED')->first();
 
             if (! $promo) {
                 return ['status' => 'no_stock'];

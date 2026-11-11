@@ -90,3 +90,7 @@ without requiring keywords. Disable the rule to silence unmatched messages.
 
 Existing deployments must run `php artisan migrate --force` before using the
 new Any message rule type. Restart queue workers after deploying new code.
+
+## Referral rewards and promo-code redemptions
+
+See [Liyubet rewards operations](docs/LIYUBET-REWARDS-OPERATIONS.md). Run the new migrations, seed the settings, configure Telegram channel verification, upload real single-use promo codes in **Rewards → Promo Codes**, and test the 50/100/500 ETB redemptions before launching the promotion.
