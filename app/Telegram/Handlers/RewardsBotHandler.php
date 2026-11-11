@@ -153,6 +153,8 @@ final class RewardsBotHandler
             'no_stock' => "⏳ {$amount} ETB promo codes are temporarily unavailable. Please wait and try again. Your balance is unchanged.",
             'insufficient' => "Your referral balance is below {$amount} ETB. Invite more friends to earn rewards.",
             'suspended' => 'Your rewards are under review. Contact support.',
+            'cooldown' => 'Please check Withdrawal History before requesting another promo code.',
+            'not_eligible' => 'Verify your channel membership before redeeming rewards.',
             default => 'This redemption option is currently unavailable.',
         };
         $this->sender->sendToUser($user, $message, replyMarkup: $this->referralKeyboard());

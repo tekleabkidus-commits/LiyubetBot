@@ -50,7 +50,9 @@ final class PromoImportService
                         continue;
                     }
                     $amount = $amountString === '' ? $defaultEtb : (ctype_digit($amountString) ? (int) $amountString : 0);
-                    if (! preg_match('/^[A-Za-z0-9][A-Za-z0-9._-]{3,127}$/D', $code)
+                    if (str_starts_with(strtoupper($code), 'YOUR-UNUSED-')
+                        || str_starts_with(strtoupper($code), 'SAMPLE-')
+                        || ! preg_match('/^[A-Za-z0-9][A-Za-z0-9._-]{3,127}$/D', $code)
                         || ! in_array($amount, $allowedEtb, true)) {
                         $stats['invalid']++;
                         continue;

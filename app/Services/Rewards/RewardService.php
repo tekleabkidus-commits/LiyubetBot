@@ -159,6 +159,10 @@ final class RewardService
         if (! preg_match('/^[A-Za-z0-9:_-]{5,120}$/', $requestKey)) {
             return ['status' => 'invalid'];
         }
+        if ((bool) $this->settings->get('rewards.require_channel', true)
+            && (! $user->in_channel || $user->channel_checked_at === null)) {
+            return ['status' => 'not_eligible'];
+        }
 
         return DB::transaction(function () use ($user, $etb, $requestKey): array {
             $previous = DB::table('reward_withdrawals as w')
@@ -172,6 +176,11 @@ final class RewardService
             $wallet = $this->lockedWallet($user->id);
             if ($wallet->suspended_at !== null) {
                 return ['status' => 'suspended'];
+            }
+            // Avoid accidental second claims caused by rapid button tapping.
+            if (DB::table('reward_withdrawals')->where('user_id', $user->id)
+                ->where('created_at', '>', now()->subSeconds(5))->exists()) {
+                return ['status' => 'cooldown'];
             }
 
             $cost = $etb * 100;

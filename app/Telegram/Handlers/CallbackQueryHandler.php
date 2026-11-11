@@ -58,6 +58,10 @@ final class CallbackQueryHandler
 
         $data = $callbackQuery['data'] ?? null;
         if (is_string($data) && str_starts_with($data, 'rewards:')) {
+            if (($callbackQuery['message']['chat']['type'] ?? null) !== 'private') {
+                $this->client->answerCallbackQuery($callbackId);
+                return;
+            }
             $this->rewardBot->handle($user, $callbackId, $data);
             return;
         }
