@@ -9,7 +9,7 @@
 
     <div class="ly-hint">
         <span>✎</span>
-        <div><strong>How to use:</strong> Choose a message on the left, edit its text, optionally upload an image, and click <strong>Save message</strong>. Changes affect new bot replies only. The optional second referral promotion is disabled until you activate it. Dynamic campaign, automation, menu and keyword-rule content continues to use its existing editors.</div>
+        <div><strong>How to use:</strong> Choose a message on the left, edit its text, optionally upload an image, and click <strong>Save message</strong>. Switching messages without saving discards unsaved edits. Changes affect new bot replies only. The optional second referral promotion is disabled until you activate it. Dynamic campaign, automation, menu and keyword-rule content continues to use its existing editors.</div>
     </div>
 
     <div class="ly-editor-layout">
@@ -22,7 +22,6 @@
                         @foreach($entries as $key => $row)
                             <button type="button" class="ly-editor-item {{ $selectedKey === $key ? 'is-active' : '' }}"
                                 wire:click="selectMessage('{{ $key }}')"
-                                wire:confirm="Switch to this message? Unsaved edits in the current message will be discarded."
                                 aria-current="{{ $selectedKey === $key ? 'true' : 'false' }}">
                                 <span class="ly-editor-indicator">✦</span>
                                 <span>{{ $row['title'] }}<small>{{ \Illuminate\Support\Str::limit($row['description'], 66) }}</small></span>

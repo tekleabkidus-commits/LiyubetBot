@@ -69,8 +69,6 @@ class BotMessages extends Page
 
     public function form(Schema $schema): Schema
     {
-        $row = BotMessageCatalog::get($this->selectedKey) ?? BotMessageCatalog::get('welcome');
-
         return $schema->statePath('data')->components([
             Section::make('Message content')
                 ->description('You are editing one message only. Updates take effect for future Telegram replies.')
@@ -97,7 +95,7 @@ class BotMessages extends Page
                         ->helperText('JPEG, PNG or WebP, maximum 6 MB. Use persistent S3-compatible storage on Laravel Cloud for durable files. Removing the image from this field removes it from this message, not from prior Telegram chats.'),
                 ]),
             Section::make('Delivery settings')
-                ->visible((bool) ($row['optional'] ?? false))
+                ->visible(fn (): bool => (bool) (BotMessageCatalog::get($this->selectedKey)['optional'] ?? false))
                 ->schema([
                     Toggle::make('enabled')
                         ->label('Send this message after the welcome')
