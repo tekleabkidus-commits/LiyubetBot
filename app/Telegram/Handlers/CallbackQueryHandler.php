@@ -12,6 +12,7 @@ use App\Models\MenuItem;
 use App\Models\User;
 use App\Services\Bot\BotLocaleResolver;
 use App\Services\Bot\BotMessageSender;
+use App\Services\Bot\BotMessageService;
 use App\Services\Bot\MenuRenderer;
 use App\Services\Bot\UserService;
 use App\Services\Bot\WelcomeService;
@@ -39,6 +40,7 @@ final class CallbackQueryHandler
         private readonly MenuRenderer $menus,
         private readonly BotLocaleResolver $locale,
         private readonly BotMessageSender $sender,
+        private readonly BotMessageService $botMessages,
         private readonly SettingsService $settings,
         private readonly RewardsBotHandler $rewardBot,
         private readonly RewardService $rewards,
@@ -108,11 +110,7 @@ final class CallbackQueryHandler
 
         if ($menuItemId === MenuRenderer::ROOT) {
             $this->client->answerCallbackQuery($callbackId);
-            $this->sender->sendToUser(
-                $user,
-                $this->locale->uiText('menu_prompt', $lang),
-                replyMarkup: $this->menus->rootKeyboard($lang),
-            );
+            $this->botMessages->send($user, 'main_menu', markup: $this->menus->rootKeyboard($lang));
 
             return;
         }

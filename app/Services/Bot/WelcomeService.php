@@ -4,53 +4,38 @@ declare(strict_types=1);
 
 namespace App\Services\Bot;
 
-use App\Models\MediaFile;
 use App\Models\User;
 use App\Services\SettingsService;
 use App\Services\Telegram\TelegramResponse;
 
-/**
- * Sends the admin-editable welcome (THE /start reply, spec §4.2) with the main
- * menu attached, and the force-join gate (spec §5.1).
- */
+/** Onboarding messages are editable in Bot Content > Bot Messages. */
 final class WelcomeService
 {
     public function __construct(
         private readonly SettingsService $settings,
         private readonly BotLocaleResolver $locale,
-        private readonly TokenRenderer $tokens,
         private readonly MenuRenderer $menus,
-        private readonly BotMessageSender $sender,
+        private readonly BotMessageService $messages,
     ) {}
 
     public function sendWelcome(User $user): TelegramResponse
     {
         $lang = $this->locale->resolve($user);
+        $response = $this->messages->send($user, 'welcome', markup: $this->menus->replyKeyboard($lang));
 
-        $template = $this->locale->pickFromMap(
-            $this->settings->get('welcome.message'),
-            $lang,
-        ) ?? $this->locale->uiText('welcome_fallback', $lang);
-
-        $text = $this->tokens->renderForUser($template, $user);
-        $features = (array) $this->settings->get('features', []);
-        if ((bool) ($features['referrals'] ?? true) && (bool) $this->settings->get('rewards.enabled', true)) {
-            $username = ltrim((string) config('telegram.bot_username'), '@');
-            if ($username !== '') {
-                $text .= "\n\n🎁 Your referral link: https://t.me/{$username}?start=ref_{$user->id}\nTap Referral to check your earnings and withdraw rewards.";
-            }
+        // This is an independently managed second message, OFF by default.
+        if ($response->successful() && $this->messages->enabled('referral_promo')
+            && (bool) ($this->settings->get('features', [])['referrals'] ?? true)
+            && (bool) $this->settings->get('rewards.enabled', true)) {
+            $this->messages->send($user, 'referral_promo');
         }
 
-        $mediaId = $this->settings->get('welcome.media_file_id');
-        $media = $mediaId !== null ? MediaFile::query()->find($mediaId) : null;
-
-        return $this->sender->sendToUser($user, $text, $media, $this->menus->replyKeyboard($lang));
+        return $response;
     }
 
     public function sendJoinGate(User $user): TelegramResponse
     {
         $lang = $this->locale->resolve($user);
-
         $rows = [];
         $channelUrl = $this->settings->get('channel.url');
 
@@ -60,10 +45,6 @@ final class WelcomeService
 
         $rows[] = [['text' => $this->locale->uiText('joined_check_button', $lang), 'callback_data' => 'join:check']];
 
-        return $this->sender->sendToUser(
-            $user,
-            $this->locale->uiText('join_gate', $lang),
-            replyMarkup: ['inline_keyboard' => $rows],
-        );
+        return $this->messages->send($user, 'join_gate', markup: ['inline_keyboard' => $rows]);
     }
 }
