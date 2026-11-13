@@ -4,7 +4,7 @@
 
 **Admin → Bot Content → Bot Messages** (`/admin/bot-messages`).
 
-This is the dedicated editor for all fixed bot-to-user chat messages. It is grouped by onboarding, referral, redemptions, navigation, and preferences. Choose one message; edit its body; optionally attach or remove an image; and save that message only. Existing messages are unaffected. Only Owner and Marketer staff may edit. Viewers cannot access the page.
+This is the dedicated editor for all fixed bot-to-user chat messages. It is grouped by onboarding, referral, redemptions, navigation, and preferences. Choose one message; edit its body; optionally attach or remove an image; and save that message only. Existing messages are unaffected. Only the Owner can edit sensitive bot-wide messages (including promo codes); marketers and viewers cannot access this centralized editor.
 
 Images accept JPEG, PNG and WebP up to 6 MB. They use the existing `media_files` table and Telegram `file_id` reuse. If the rendered text is over Telegram's 1024-character caption limit, the system sends the image separately followed by the full message with its keyboard. Failed image delivery falls back to sending the text.
 

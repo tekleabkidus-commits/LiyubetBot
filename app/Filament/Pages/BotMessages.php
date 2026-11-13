@@ -37,7 +37,7 @@ class BotMessages extends Page
 
     public static function canAccess(): bool
     {
-        return auth()->user() !== null && ! auth()->user()->isViewer();
+        return auth()->user()?->isOwner() === true;
     }
 
     public function mount(): void
