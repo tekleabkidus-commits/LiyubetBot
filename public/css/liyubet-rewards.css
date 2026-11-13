@@ -112,3 +112,27 @@
 @media (max-width:1150px){.ly-rewards .ly-grid-4{grid-template-columns:repeat(2,minmax(0,1fr))}.ly-rewards .ly-split{grid-template-columns:1fr}.ly-rewards .ly-stock-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media (max-width:650px){.ly-rewards{gap:15px}.ly-rewards .ly-hero{border-radius:16px;padding:25px 19px;min-height:0;display:block}.ly-rewards .ly-hero h1{font-size:26px}.ly-rewards .ly-hero .ly-action{margin-top:16px}.ly-rewards .ly-nav{border-radius:12px}.ly-rewards .ly-nav a{font-size:11px;padding:10px}.ly-rewards .ly-grid-2,.ly-rewards .ly-grid-3,.ly-rewards .ly-grid-4{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.ly-rewards .ly-stat{min-height:115px;padding:14px}.ly-rewards .ly-stat strong{font-size:21px}.ly-rewards .ly-stat small{padding-right:30px;font-size:10px;margin-bottom:12px;min-height:26px}.ly-rewards .ly-stat .ly-symbol{width:28px;height:28px;right:10px;top:10px}.ly-rewards .ly-panel{border-radius:14px}.ly-rewards .ly-panel-head{padding:17px}.ly-rewards .ly-stock-grid{grid-template-columns:1fr}.ly-rewards .ly-form-grid{grid-template-columns:1fr}.ly-rewards .ly-table th,.ly-rewards .ly-table td{padding:12px 13px}.ly-rewards .ly-form-footer{align-items:flex-start;flex-direction:column}.ly-rewards .ly-action{white-space:normal}.ly-rewards .ly-chart{padding:12px 1px}.ly-rewards .ly-chart-col{gap:5px}}
 @media (prefers-reduced-motion:reduce){.ly-rewards *{scroll-behavior:auto!important;transition:none!important}}
+
+
+/* Bot Messages editor — same visual language as Rewards Studio. */
+.ly-message-editor .ly-editor-layout{display:grid;grid-template-columns:minmax(225px,310px) minmax(0,1fr);gap:16px;min-width:0;align-items:start}
+.ly-message-editor .ly-message-sidebar{position:sticky;top:84px;max-height:calc(100dvh - 115px);display:flex;flex-direction:column}
+.ly-message-editor .ly-editor-list{overflow-y:auto;min-height:0;padding:8px 10px 18px;scrollbar-color:#d6cbe5 transparent}
+.ly-message-editor .ly-editor-group h3{font-size:10px;letter-spacing:.12em;color:#9f90b2;text-transform:uppercase;font-weight:820;padding:16px 10px 9px;display:flex;justify-content:space-between}
+.ly-message-editor .ly-editor-group h3 span{font-size:10px;color:#b4a7c3}
+.ly-message-editor .ly-editor-item{border:1px solid transparent;display:flex;align-items:flex-start;text-align:left;gap:10px;padding:11px 10px;border-radius:11px;background:transparent;color:#574b69;width:100%;font-size:12px;font-weight:760;line-height:1.4;transition:.15s}
+.ly-message-editor .ly-editor-item:hover{background:#faf7ff;color:#612ba8}
+.ly-message-editor .ly-editor-item.is-active{background:#f2ebff;color:#5722ad;border-color:#e9ddff}
+.ly-message-editor .ly-editor-item .ly-editor-indicator{flex:0 0 auto;color:#a68abd;margin-top:2px}
+.ly-message-editor .ly-editor-item.is-active .ly-editor-indicator{color:#6d28d9}
+.ly-message-editor .ly-editor-item small{display:block;font-size:10px;font-weight:470;color:#988ba8;margin-top:4px}
+.ly-message-editor .ly-message-main{display:flex;flex-direction:column;gap:16px;min-width:0}
+.ly-message-editor .ly-editor-tokens{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.ly-message-editor .ly-editor-tokens code{font-size:11px;color:#6a38b5;background:#fff;border:1px solid #e6d6ff;border-radius:7px;padding:5px 8px}
+.ly-message-editor .ly-preview-stage{background:linear-gradient(160deg,#f3eafc 0%,#ebe8f4 70%,#ececf6 100%);padding:24px;min-height:190px;display:flex;justify-content:flex-start}
+.ly-message-editor .ly-telegram-bubble{max-width:min(100%,540px);white-space:normal;background:#fff;border-radius:7px 17px 17px 17px;padding:15px 18px;box-shadow:0 8px 20px #24144016;overflow-wrap:anywhere}
+.ly-message-editor .ly-telegram-label{color:#6a36c4;font-weight:820;font-size:12px}
+.ly-message-editor .ly-preview-media{margin:10px 0;background:#f3eefb;color:#7e5ba2;border:1px dashed #cfbdec;border-radius:8px;padding:15px;font-size:11px}
+.ly-message-editor .ly-preview-text{margin-top:10px;color:#2d2538;line-height:1.75;white-space:pre-wrap;word-break:break-word;font-size:13px}
+.ly-message-editor .ly-telegram-bubble>small{display:block;text-align:right;font-size:10px;color:#aaa2b6;margin-top:8px}
+@media(max-width:800px){.ly-message-editor .ly-editor-layout{grid-template-columns:1fr}.ly-message-editor .ly-message-sidebar{position:static;max-height:300px}.ly-message-editor .ly-preview-stage{padding:15px}}
