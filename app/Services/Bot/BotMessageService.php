@@ -93,17 +93,26 @@ final class BotMessageService
             ? MediaFile::query()->find($content['media_file_id']) : null;
 
         if ($media !== null && mb_strlen($body) > 1024) {
-            $imageResponse = $this->sender->sendToUser($user, null, $media);
-            if (! $imageResponse->successful()) {
+            try {
+                $imageResponse = $this->sender->sendToUser($user, null, $media);
+                if (! $imageResponse->successful()) {
+                    Log::warning('bot.message.media_failed', ['key' => $key, 'media_id' => $media->id]);
+                }
+            } catch (\Throwable $e) {
+                report($e);
                 Log::warning('bot.message.media_failed', ['key' => $key, 'media_id' => $media->id]);
             }
             return $this->sender->sendToUser($user, $body, replyMarkup: $markup);
         }
 
         if ($media !== null) {
-            $result = $this->sender->sendToUser($user, $body, $media, $markup);
-            if ($result->successful()) {
-                return $result;
+            try {
+                $result = $this->sender->sendToUser($user, $body, $media, $markup);
+                if ($result->successful()) {
+                    return $result;
+                }
+            } catch (\Throwable $e) {
+                report($e);
             }
             Log::warning('bot.message.media_failed', ['key' => $key, 'media_id' => $media->id]);
         }
