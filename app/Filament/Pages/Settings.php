@@ -58,8 +58,6 @@ class Settings extends Page
             'send_rate' => $settings->get('telegram.send_rate', (int) config('telegram.send_rate')),
             'test_recipients' => array_map('strval', (array) $settings->get('broadcast.test_recipient_chat_ids', [])),
             'webapp_url' => $settings->get('webapp.url'),
-            'welcome_en' => $welcome['en'] ?? null,
-            'welcome_media_upload' => $mediaPath,
             'feature_referrals' => (bool) ($features['referrals'] ?? true),
             'feature_polls' => (bool) ($features['polls'] ?? true),
             'feature_mini_app' => (bool) ($features['mini_app'] ?? true),
@@ -77,23 +75,7 @@ class Settings extends Page
                     ? 'Telegram Bot: Token configured'
                     : 'Telegram Bot: NOT configured — set TELEGRAM_BOT_TOKEN in the environment.')
                     ->weight('bold'),
-                Section::make('Welcome message')
-                    ->description('The reply every user gets on /start. Personalization: {first_name}.')
-                    ->schema([
-                        Textarea::make('welcome_en')
-                            ->label('Welcome message (English)')
-                            ->rows(4)
-                            ->required()
-                            ->maxLength(4000)
-                            ->disabled($isViewer),
-                        FileUpload::make('welcome_media_upload')
-                            ->label('Welcome media (optional)')
-                            ->disk(config('filesystems.default'))
-                            ->directory('media')
-                            ->acceptedFileTypes(MediaFileService::acceptedMimeTypes())
-                            ->maxSize(50 * 1024)
-                            ->disabled($isViewer),
-                    ]),
+                Text::make('Edit customer-facing welcome messages, referral promotions, replies and images under Bot Content → Bot Messages.')->weight('bold'),
                 Section::make('Respectful messaging')->description('Promotions from campaigns and journeys share these limits.')->collapsible()->schema([
                     TextInput::make('daily_limit')->label('Maximum promotions per person per day')->numeric()->minValue(1)->maxValue(9)->disabled(! $isOwner),
                     TextInput::make('quiet_start')->label('Quiet hours start (0–23, Addis time)')->numeric()->minValue(0)->maxValue(23)->requiredWith('quiet_end')->disabled(! $isOwner),
@@ -146,14 +128,6 @@ class Settings extends Page
         $policy = new SettingPolicy;
         $admin = auth()->user();
 
-        $mediaId = null;
-
-        if (filled($state['welcome_media_upload'] ?? null)) {
-            $current = $settings->get('welcome.media_file_id');
-            $currentMedia = $current !== null ? MediaFile::query()->find($current) : null;
-            $mediaId = FormMedia::resolveMediaFileId($state['welcome_media_upload'], $currentMedia);
-        }
-
         // Disabled fields never dehydrate (marketers don't submit owner-only
         // keys), so absent state falls back to the stored value = "no change".
         $features = (array) $settings->get('features', []);
@@ -173,10 +147,6 @@ class Settings extends Page
                 ? array_values(array_filter(array_map('intval', (array) $state['test_recipients'])))
                 : (array) $settings->get('broadcast.test_recipient_chat_ids', []),
             'webapp.url' => $state['webapp_url'] ?? $settings->get('webapp.url'),
-            'welcome.message' => [
-                'en' => $state['welcome_en'] ?? ((array) $settings->get('welcome.message', []))['en'] ?? null,
-            ],
-            'welcome.media_file_id' => $mediaId,
             'features' => [
                 'referrals' => (bool) ($state['feature_referrals'] ?? $features['referrals'] ?? true),
                 'polls' => (bool) ($state['feature_polls'] ?? $features['polls'] ?? true),

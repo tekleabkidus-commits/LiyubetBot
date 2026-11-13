@@ -78,6 +78,7 @@ class BotMessages extends Page
                     Textarea::make('text')
                         ->label('Message text')
                         ->rows(10)
+                        ->live(debounce: 450)
                         ->required()
                         ->maxLength(4096)
                         ->helperText('Amharic and English are both supported. Keep variable tokens in braces (for example {first_name} and {referral_link}). Use a normal line break for a new line.'),
@@ -118,6 +119,19 @@ class BotMessages extends Page
         if ($text === '' || mb_strlen($text) > 4096) {
             $this->addError('data.text', 'Message text must contain 1–4096 characters.');
             return;
+        }
+
+        // Preserve required links and codes when administrators revise wording.
+        $requiredTokens = match ($this->selectedKey) {
+            'referral_link', 'referral_promo' => ['referral_link'],
+            'withdrawal_issued', 'history_entry' => ['code'],
+            default => [],
+        };
+        foreach ($requiredTokens as $token) {
+            if (! str_contains($text, '{'.$token.'}')) {
+                $this->addError('data.text', 'This message must include {'.$token.'} to work safely.');
+                return;
+            }
         }
 
         $current = app(BotMessageService::class)->content($this->selectedKey);

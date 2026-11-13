@@ -47,7 +47,7 @@
                         <span>{ }</span><div><strong>Available personalization fields:</strong>
                             <div class="ly-editor-tokens">
                                 @foreach($selectedMessage['tokens'] as $token)
-                                    <code>@{{ '{'.$token.'}' }}</code>
+                                    <code>{{ '{'.$token.'}' }}</code>
                                 @endforeach
                             </div>
                         </div>

@@ -98,8 +98,8 @@ final class BotMessageCatalog
             ],
             'history' => [
                 'group'=>'Redemptions','title'=>'Withdrawal history','description'=>'A summary followed by the last five transaction records.',
-                'text'=>"📜 Your last {count} reward redemptions\n{entries}",
-                'tokens'=>['count','entries'],
+                'text'=>"📜 Your last {count} reward redemptions",
+                'tokens'=>['count'],
             ],
             'history_entry' => [
                 'group'=>'Redemptions','title'=>'Individual history entry','description'=>'Repeated for each recent redemption. {code} is the original private code.',
