@@ -93,3 +93,13 @@ it('rolls back already-inserted promo batches if a later row fails', function ()
 
     expect(DB::table('promo_codes')->count())->toBe(0);
 });
+
+
+it('uses a non-reserved Livewire import action for promo spreadsheet submission', function () {
+    expect(method_exists(\App\Filament\Pages\PromoInventory::class, 'importPromoCodes'))->toBeTrue()
+        ->and(method_exists(\App\Filament\Pages\PromoInventory::class, 'upload'))->toBeFalse();
+
+    $view = file_get_contents(resource_path('views/filament/pages/promo-inventory.blade.php'));
+    expect($view)->toContain('wire:submit="importPromoCodes"')
+        ->and($view)->not->toContain('wire:submit="upload"');
+});

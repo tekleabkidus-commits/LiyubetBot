@@ -34,7 +34,7 @@ class PromoInventory extends Page
         return auth()->user()?->isOwner() === true;
     }
 
-    public function upload(): void
+    public function importPromoCodes(): void
     {
         abort_unless(static::canAccess(), 403);
         $this->validate([

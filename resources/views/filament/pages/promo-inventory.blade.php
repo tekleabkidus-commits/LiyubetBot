@@ -21,7 +21,7 @@
             <div class="ly-panel-head"><div><h2>Import new promo codes</h2><p>Bulk upload Excel (.xlsx) or CSV files securely</p></div><span class="ly-pill ly-ok">Encrypted at rest</span></div>
             <div class="ly-panel-body">
                 <div class="ly-hint"><span>ⓘ</span><div><strong>Format:</strong> Column A = <code>code</code>, column B = <code>amount</code> (optional ETB value). Use real unused promo codes. Invalid, duplicate and sample codes are automatically skipped.</div></div>
-                <form wire:submit="upload" enctype="multipart/form-data" style="margin-top:20px">
+                <form wire:submit="importPromoCodes" enctype="multipart/form-data" style="margin-top:20px">
                     <div class="ly-form-row">
                         <div class="ly-field">
                             <label for="ly-default-value">Default value</label>
@@ -39,7 +39,7 @@
                     <div id="ly-upload-limit" class="ly-small" style="margin:12px 0">Up to 10 MB per file. Existing issued codes are never overwritten.</div>
                     <div class="ly-form-footer">
                         <p>Upload is restricted to the Owner. New codes will appear in the stock table after a successful import.</p>
-                        <button type="submit" class="ly-action ly-primary" wire:loading.attr="disabled" wire:target="upload,spreadsheet">↑ Import promo codes <span wire:loading wire:target="upload,spreadsheet">…</span></button>
+                        <button type="submit" class="ly-action ly-primary" wire:loading.attr="disabled" wire:target="importPromoCodes,spreadsheet">↑ Import promo codes <span wire:loading wire:target="upload,spreadsheet">…</span></button>
                     </div>
                 </form>
                 @if($lastImport)<div class="ly-hint ly-success" role="status" style="margin-top:14px"><span>✓</span><div>{{ $lastImport }}</div></div>@endif
