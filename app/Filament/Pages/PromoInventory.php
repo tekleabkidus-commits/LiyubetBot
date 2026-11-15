@@ -38,7 +38,7 @@ class PromoInventory extends Page
     {
         abort_unless(static::canAccess(), 403);
         $this->validate([
-            'spreadsheet' => ['required', 'file', 'mimes:xlsx,csv,txt', 'max:10240'],
+            'spreadsheet' => ['required', 'file', 'mimes:xlsx,csv,txt', 'extensions:xlsx,csv', 'max:10240'],
             'denomination' => ['required', 'integer', 'in:50,100,500'],
         ]);
         $allowed = app(RewardService::class)->denominations();
@@ -50,7 +50,10 @@ class PromoInventory extends Page
             $result = app(PromoImportService::class)->import($this->spreadsheet, $this->denomination, $allowed);
         } catch (\Throwable $e) {
             report($e);
-            $this->addError('spreadsheet', 'Import failed. Verify the file is a valid XLSX or CSV and try again.');
+            $message = $e->getMessage();
+            $this->addError('spreadsheet', str_starts_with($message, 'Promo upload: ')
+                ? substr($message, strlen('Promo upload: '))
+                : 'Import failed. Verify the file is a valid XLSX or CSV and try again.');
             return;
         }
 
@@ -60,6 +63,14 @@ class PromoInventory extends Page
         ]);
         $this->lastImport = "Imported {$result['imported']} codes. Skipped {$result['duplicates']} duplicates and {$result['invalid']} invalid rows.";
         $this->reset('spreadsheet');
+        if ($result['imported'] === 0) {
+            Notification::make()
+                ->title('No new promo codes imported')
+                ->body($this->lastImport.' Check the codes and the enabled values in Reward Settings.')
+                ->warning()
+                ->send();
+            return;
+        }
         Notification::make()->title('Promo code import complete')->body($this->lastImport)->success()->send();
     }
 
