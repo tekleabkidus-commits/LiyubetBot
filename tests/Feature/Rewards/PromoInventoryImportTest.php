@@ -72,14 +72,24 @@ it('handles CSV BOMs and skips duplicate and placeholder promo codes', function 
         ->and(DB::table('promo_codes')->count())->toBe(1);
 });
 
-it('does not leave partial promo inventory behind when the spreadsheet fails mid-import', function () {
+it('rolls back already-inserted promo batches if a later row fails', function () {
     $content = "code,amount\n";
-    for ($i = 1; $i <= 100001; $i++) {
+    for ($i = 1; $i <= 501; $i++) {
         $content .= sprintf("BULK-TEST-%06d,50\n", $i);
     }
-    $file = UploadedFile::fake()->createWithContent('oversized-rows.csv', $content);
+    $file = UploadedFile::fake()->createWithContent('promos.csv', $content);
+
+    $calls = 0;
+    Crypt::shouldReceive('encryptString')->andReturnUsing(function (string $code) use (&$calls): string {
+        if (++$calls === 501) {
+            throw new RuntimeException('Simulated failure after the first batch');
+        }
+
+        return 'test-encrypted-content';
+    });
 
     expect(fn () => app(PromoImportService::class)->import($file, 50, [50]))
-        ->toThrow(RuntimeException::class, 'Maximum 100,000');
+        ->toThrow(RuntimeException::class, 'Simulated failure');
+
     expect(DB::table('promo_codes')->count())->toBe(0);
 });
