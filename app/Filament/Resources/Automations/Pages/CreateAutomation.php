@@ -12,6 +12,8 @@ class CreateAutomation extends CreateRecord
 
     protected static string $resource = AutomationResource::class;
 
+    protected ?bool $hasDatabaseTransactions = true;
+
     private array $stepsData = [];
 
     protected function mutateFormDataBeforeCreate(array $data): array

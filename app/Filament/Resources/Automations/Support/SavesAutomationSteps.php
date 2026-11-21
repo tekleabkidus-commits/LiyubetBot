@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Automations\Support;
 
 use App\Enums\BotLanguage;
+use App\Filament\Support\FormMedia;
 use App\Models\Automation;
 
 /**
@@ -14,9 +15,8 @@ trait SavesAutomationSteps
 {
     protected function saveSteps(Automation $automation, array $stepsData): void
     {
-        if ($automation->userStates()->where('status', 'active')->exists()) {
-            return;
-        }
+        // Live journeys can update step content. EditAutomation disallows
+        // adding/removing steps or changing step delays while users are active.
         $keptStepNos = [];
 
         foreach (array_values($stepsData) as $index => $row) {
@@ -29,6 +29,18 @@ trait SavesAutomationSteps
                     'buttons' => filled($row['buttons'] ?? null) ? array_values($row['buttons']) : null,
                 ],
             );
+
+            // Resolve the stored upload against the shared media_files table.
+            // Keep Telegram file_id caching for an unchanged image and detach
+            // the media when the admin clears the upload.
+            $mediaFileId = FormMedia::resolveMediaFileId(
+                $row['media_upload'] ?? null,
+                $step->mediaFile,
+            );
+
+            if ($step->media_file_id !== $mediaFileId) {
+                $step->update(['media_file_id' => $mediaFileId]);
+            }
 
             foreach ([BotLanguage::En] as $lang) {
                 $text = $row['text_'.$lang->value] ?? null;
@@ -49,6 +61,7 @@ trait SavesAutomationSteps
         return $automation->steps->map(fn ($step) => [
             'delay_hours' => $step->delay_hours,
             'text_en' => $step->translations->firstWhere('lang', BotLanguage::En)?->text,
+            'media_upload' => $step->mediaFile?->path,
             'buttons' => $step->buttons ?? [],
         ])->all();
     }

@@ -14,6 +14,8 @@ class EditAutomation extends EditRecord
 
     protected static string $resource = AutomationResource::class;
 
+    protected ?bool $hasDatabaseTransactions = true;
+
     private array $stepsData = [];
 
     protected function getHeaderActions(): array
@@ -33,8 +35,25 @@ class EditAutomation extends EditRecord
 
     protected function mutateFormDataBeforeSave(array $data): array
     {
-        if ($this->record->userStates()->where('status', 'active')->exists() && ($data['steps_data'] ?? []) !== $this->fillStepsData($this->record)) {
-            throw ValidationException::withMessages(['data.steps_data' => 'This journey has active participants. Keep its steps unchanged, or create a new journey.']);
+        if ($this->record->userStates()->where('status', 'active')->exists()) {
+            // Media, message and button updates are safe for future deliveries,
+            // but existing enrollments need stable step numbers and timing.
+            $incoming = array_values($data['steps_data'] ?? []);
+            $existing = array_values($this->fillStepsData($this->record));
+
+            if (count($incoming) !== count($existing)) {
+                throw ValidationException::withMessages([
+                    'data.steps_data' => 'This journey has active participants. You may edit existing messages, images and buttons, but cannot add or remove steps.',
+                ]);
+            }
+
+            foreach ($incoming as $index => $step) {
+                if ((int) ($step['delay_hours'] ?? 0) !== (int) ($existing[$index]['delay_hours'] ?? 0)) {
+                    throw ValidationException::withMessages([
+                        'data.steps_data' => 'This journey has active participants. Step delays cannot be changed until the participants finish.',
+                    ]);
+                }
+            }
         }
         $this->stepsData = $data['steps_data'] ?? [];
         unset($data['steps_data']);

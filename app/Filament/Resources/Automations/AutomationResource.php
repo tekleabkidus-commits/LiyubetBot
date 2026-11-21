@@ -38,7 +38,7 @@ class AutomationResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()->with('steps.translations')->withCount('userStates');
+        return parent::getEloquentQuery()->with(['steps.translations', 'steps.mediaFile'])->withCount('userStates');
     }
 
     public static function getPages(): array

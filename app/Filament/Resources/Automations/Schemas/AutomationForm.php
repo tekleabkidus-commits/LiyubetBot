@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Automations\Schemas;
 
 use App\Enums\AutomationTrigger;
 use Closure;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
@@ -69,10 +70,21 @@ class AutomationForm
                             ->required()
                             ->helperText('Counted from the PREVIOUS step; the first step counts from the trigger.'),
                         Textarea::make('text_en')
-                            ->label('Message (EN)')
+                            ->label('Message / image caption (EN)')
                             ->rows(3)
-                            ->required()
-                            ->maxLength(4000),
+                            ->required(fn (Get $get): bool => blank($get('media_upload')))
+                            ->maxLength(fn (Get $get): int => filled($get('media_upload')) ? 1024 : 4000)
+                            ->helperText('Optional when an image is attached. Maximum 1,024 characters with a photo, or 4,000 for text-only.'),
+                        FileUpload::make('media_upload')
+                            ->label('Image (optional)')
+                            ->image()
+                            ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/gif'])
+                            ->disk(config('filesystems.default'))
+                            ->directory('media/automations')
+                            ->maxSize(10 * 1024)
+                            ->imagePreviewHeight('180')
+                            ->live()
+                            ->helperText('JPG, PNG, WEBP or GIF, up to 10 MB. Image and caption are sent together to Telegram. Remove the image for a text-only step.'),
                         Repeater::make('buttons')
                             ->label('URL buttons')
                             ->schema([
